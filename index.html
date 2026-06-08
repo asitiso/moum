@@ -7,114 +7,72 @@
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{
-  font-family:'Nanum Gothic',sans-serif;
-  min-height:100vh;
-  background:#fffbf0;
-  background-image:
-    radial-gradient(ellipse 70% 50% at 10% 0%, #fef3c7 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 95% 100%, #fde68a 0%, transparent 55%),
-    radial-gradient(ellipse 40% 30% at 50% 50%, #fffbf0 0%, transparent 70%);
-  background-attachment:fixed;
-}
-
-/* 헤더 */
+body{font-family:'Nanum Gothic',sans-serif;min-height:100vh;background:#fffbf0;background-image:radial-gradient(ellipse 70% 50% at 10% 0%,#fef3c7 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 95% 100%,#fde68a 0%,transparent 55%);background-attachment:fixed}
 .header{padding:52px 22px 14px;display:flex;align-items:flex-end;justify-content:space-between}
 .header-eyebrow{font-size:11px;font-weight:700;letter-spacing:0.12em;color:#d97706;text-transform:uppercase;margin-bottom:3px}
 .header-title{font-family:'Nanum Myeongjo',serif;font-size:30px;font-weight:800;color:#78350f;line-height:1}
 .header-count{font-size:12px;color:#b45309;margin-top:4px;font-weight:700}
-.add-btn{
-  width:46px;height:46px;border-radius:14px;border:none;cursor:pointer;
-  background:#f59e0b;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 6px 20px rgba(245,158,11,0.45);
-  transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.2s;
-  flex-shrink:0;
-}
-.add-btn:hover{transform:scale(1.12) rotate(15deg);box-shadow:0 10px 28px rgba(245,158,11,0.55)}
-.add-btn:active{transform:scale(0.92)}
+.add-btn{width:46px;height:46px;border-radius:14px;border:none;cursor:pointer;background:#f59e0b;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(245,158,11,.45);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;flex-shrink:0}
+.add-btn:hover{transform:scale(1.12) rotate(15deg);box-shadow:0 10px 28px rgba(245,158,11,.55)}
+.add-btn:active{transform:scale(.92)}
 .add-btn svg{width:22px;height:22px;stroke:#fff;stroke-width:2.8;fill:none}
-
-/* 메인 */
 .main{padding:10px 18px 100px}
-.section-title{font-size:11px;font-weight:800;color:rgba(180,83,9,0.45);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px}
-
-/* 그리드 */
+.section-title{font-size:11px;font-weight:800;color:rgba(180,83,9,.45);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 10px}
-.app-item{display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;animation:popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both}
-@keyframes popIn{from{transform:scale(0.5) translateY(8px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
-
-/* 꽃 아이콘 공통 */
-.flower-icon{
-  width:64px;height:64px;border-radius:20px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;flex-shrink:0;
-  border:2px solid rgba(255,255,255,0.7);
-  transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.2s;
-}
-.flower-icon:hover{transform:translateY(-5px) scale(1.08)}
-.flower-icon:active{transform:scale(0.92)}
+.app-item{display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;animation:popIn .35s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes popIn{from{transform:scale(.5) translateY(8px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.app-icon-img{width:64px;height:64px;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;flex-shrink:0;box-shadow:0 4px 14px rgba(180,83,9,.18);border:2px solid rgba(255,255,255,.8);background:#fff;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+.app-icon-img img{width:40px;height:40px;object-fit:contain}
+.app-icon-img:hover,.flower-icon:hover{transform:translateY(-5px) scale(1.08);box-shadow:0 10px 24px rgba(180,83,9,.25)}
+.app-icon-img:active,.flower-icon:active{transform:scale(.92)}
+.flower-icon{width:64px;height:64px;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;border:2px solid rgba(255,255,255,.7);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
 .flower-icon svg{width:42px;height:42px}
-
 .app-name{font-size:10.5px;color:#78350f;text-align:center;max-width:68px;line-height:1.35;font-weight:700;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all}
-
-/* 수정/삭제 */
-.app-actions{position:absolute;top:-6px;right:-2px;display:flex;gap:3px;opacity:0;transition:opacity 0.18s;z-index:5}
+.app-actions{position:absolute;top:-6px;right:-2px;display:flex;gap:3px;opacity:0;transition:opacity .18s;z-index:5}
 .app-item:hover .app-actions{opacity:1}
-.act-btn{width:22px;height:22px;border-radius:50%;border:2px solid #fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;transition:transform 0.15s;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.act-btn{width:22px;height:22px;border-radius:50%;border:2px solid #fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;transition:transform .15s;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .act-btn:hover{transform:scale(1.25)}
 .act-edit{background:#fbbf24;color:#78350f}
 .act-del{background:#f87171;color:#7f1d1d}
-
-/* 빈 상태 */
 .empty{text-align:center;padding:50px 20px 40px}
-.empty-card{background:rgba(255,255,255,0.7);backdrop-filter:blur(16px);border-radius:28px;padding:36px 24px;border:1.5px solid rgba(245,158,11,0.2);box-shadow:0 8px 32px rgba(180,83,9,0.08)}
-.empty-icon{width:72px;height:72px;border-radius:24px;margin:0 auto 18px;background:#f59e0b;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(245,158,11,0.4);animation:float 3s ease-in-out infinite;font-size:36px}
+.empty-card{background:rgba(255,255,255,.7);backdrop-filter:blur(16px);border-radius:28px;padding:36px 24px;border:1.5px solid rgba(245,158,11,.2);box-shadow:0 8px 32px rgba(180,83,9,.08)}
+.empty-icon{width:72px;height:72px;border-radius:24px;margin:0 auto 18px;background:#f59e0b;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(245,158,11,.4);animation:float 3s ease-in-out infinite;font-size:36px}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .empty h3{font-family:'Nanum Myeongjo',serif;font-size:20px;font-weight:800;color:#78350f;margin-bottom:8px}
-.empty p{font-size:13px;color:rgba(120,53,15,0.6);line-height:1.7}
-.empty-btn{margin-top:22px;display:inline-flex;align-items:center;gap:8px;background:#f59e0b;color:#fff;border:none;border-radius:30px;padding:12px 26px;font-size:14px;font-family:'Nanum Gothic',sans-serif;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(245,158,11,0.45);transition:transform 0.18s}
+.empty p{font-size:13px;color:rgba(120,53,15,.6);line-height:1.7}
+.empty-btn{margin-top:22px;display:inline-flex;align-items:center;gap:8px;background:#f59e0b;color:#fff;border:none;border-radius:30px;padding:12px 26px;font-size:14px;font-family:'Nanum Gothic',sans-serif;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(245,158,11,.45);transition:transform .18s}
 .empty-btn:hover{transform:scale(1.05)}
-
-/* 오버레이 */
-.overlay{position:fixed;inset:0;background:rgba(60,20,5,0.35);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity 0.25s}
+.overlay{position:fixed;inset:0;background:rgba(60,20,5,.35);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
 .overlay.open{opacity:1;pointer-events:all}
-.modal{background:rgba(255,251,240,0.96);backdrop-filter:blur(30px);border-radius:32px 32px 0 0;width:100%;max-width:480px;padding:10px 20px 40px;border-top:2px solid rgba(245,158,11,0.3);box-shadow:0 -4px 40px rgba(180,83,9,0.15);transform:translateY(100%);transition:transform 0.32s cubic-bezier(0.32,0.72,0,1)}
+.modal{background:rgba(255,251,240,.97);backdrop-filter:blur(30px);border-radius:32px 32px 0 0;width:100%;max-width:480px;padding:10px 20px 40px;border-top:2px solid rgba(245,158,11,.3);box-shadow:0 -4px 40px rgba(180,83,9,.15);transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1)}
 .overlay.open .modal{transform:translateY(0)}
-.modal-handle{width:36px;height:4px;border-radius:4px;background:rgba(180,83,9,0.2);margin:0 auto 20px}
+.modal-handle{width:36px;height:4px;border-radius:4px;background:rgba(180,83,9,.2);margin:0 auto 20px}
 .modal-title{font-family:'Nanum Myeongjo',serif;font-size:22px;font-weight:800;color:#78350f;margin-bottom:18px;display:flex;align-items:center;gap:8px}
-
-/* 미리보기 */
-.preview-card{display:flex;align-items:center;gap:14px;background:rgba(245,158,11,0.07);border:1.5px solid rgba(245,158,11,0.25);border-radius:20px;padding:12px 14px;margin-bottom:16px}
-.preview-icon-box{width:52px;height:52px;border-radius:16px;background:#fff;border:1.5px solid rgba(245,158,11,0.2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;box-shadow:0 2px 10px rgba(180,83,9,0.1)}
-.preview-icon-box svg{width:24px;height:24px}
-.preview-flower-box{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(255,255,255,0.6);transition: background 0.2s;}
-.preview-flower-box svg{width:34px;height:34px}
+.preview-card{display:flex;align-items:center;gap:14px;background:rgba(245,158,11,.07);border:1.5px solid rgba(245,158,11,.25);border-radius:20px;padding:12px 14px;margin-bottom:16px}
+.preview-icon-box{width:52px;height:52px;border-radius:16px;background:#fff;border:1.5px solid rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;box-shadow:0 2px 10px rgba(180,83,9,.1)}
+.preview-icon-box img{width:34px;height:34px;object-fit:contain}
+.preview-flower-box{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(255,255,255,.6)}
+.preview-flower-box svg{width:32px;height:32px}
 .preview-info{flex:1;min-width:0}
-.preview-name{font-size:14px;font-weight:800;color:#78350f;margin-bottom:3px}
-.preview-desc{font-size:12px;color:rgba(120,53,15,0.65);line-height:1.4}
-.preview-loading{color:#f59e0b;animation:pulse 1.2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-
-/* 폼 */
+.preview-name-txt{font-size:14px;font-weight:800;color:#78350f;margin-bottom:3px}
+.preview-desc-txt{font-size:12px;color:rgba(120,53,15,.65);line-height:1.4}
+.loading-anim{color:#f59e0b;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .form-group{margin-bottom:14px}
-.form-label{display:block;font-size:11px;font-weight:800;color:rgba(180,83,9,0.55);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
-.form-input,.form-textarea{width:100%;background:rgba(245,158,11,0.06);border:1.5px solid rgba(245,158,11,0.2);border-radius:14px;padding:11px 14px;font-size:15px;font-family:'Nanum Gothic',sans-serif;color:#78350f;outline:none;transition:border-color 0.18s,background 0.18s,box-shadow 0.18s}
-.form-input:focus,.form-textarea:focus{border-color:rgba(245,158,11,0.6);background:#fff;box-shadow:0 0 0 4px rgba(245,158,11,0.1)}
+.form-label{display:block;font-size:11px;font-weight:800;color:rgba(180,83,9,.55);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.form-input,.form-textarea{width:100%;background:rgba(245,158,11,.06);border:1.5px solid rgba(245,158,11,.2);border-radius:14px;padding:11px 14px;font-size:15px;font-family:'Nanum Gothic',sans-serif;color:#78350f;outline:none;transition:border-color .18s,background .18s,box-shadow .18s}
+.form-input:focus,.form-textarea:focus{border-color:rgba(245,158,11,.6);background:#fff;box-shadow:0 0 0 4px rgba(245,158,11,.1)}
 .form-textarea{resize:none;height:68px;line-height:1.55}
 .char-row{display:flex;justify-content:flex-end;margin-top:5px}
-.char-badge{font-size:11px;font-weight:700;color:rgba(180,83,9,0.6);background:rgba(245,158,11,0.12);border-radius:20px;padding:2px 9px}
-
-/* 버튼 */
+.char-badge{font-size:11px;font-weight:700;color:rgba(180,83,9,.6);background:rgba(245,158,11,.12);border-radius:20px;padding:2px 9px}
 .btn-row{display:flex;gap:10px;margin-top:6px}
-.btn-cancel{flex:1;padding:13px;border:1.5px solid rgba(245,158,11,0.25);border-radius:16px;background:transparent;font-size:14px;cursor:pointer;color:rgba(120,53,15,0.65);font-family:'Nanum Gothic',sans-serif;font-weight:700;transition:background 0.15s}
-.btn-cancel:hover{background:rgba(245,158,11,0.07)}
-.btn-save{flex:2.5;padding:13px;border:none;border-radius:16px;background:#f59e0b;font-size:15px;cursor:pointer;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:800;box-shadow:0 6px 20px rgba(245,158,11,0.4);transition:transform 0.18s,box-shadow 0.18s}
-.btn-save:hover{transform:scale(1.03);box-shadow:0 8px 26px rgba(245,158,11,0.5)}
-.btn-save:active{transform:scale(0.97)}
-
+.btn-cancel{flex:1;padding:13px;border:1.5px solid rgba(245,158,11,.25);border-radius:16px;background:transparent;font-size:14px;cursor:pointer;color:rgba(120,53,15,.65);font-family:'Nanum Gothic',sans-serif;font-weight:700;transition:background .15s}
+.btn-cancel:hover{background:rgba(245,158,11,.07)}
+.btn-save{flex:2.5;padding:13px;border:none;border-radius:16px;background:#f59e0b;font-size:15px;cursor:pointer;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:800;box-shadow:0 6px 20px rgba(245,158,11,.4);transition:transform .18s,box-shadow .18s}
+.btn-save:hover{transform:scale(1.03);box-shadow:0 8px 26px rgba(245,158,11,.5)}
+.btn-save:active{transform:scale(.97)}
 ::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-thumb{background:rgba(245,158,11,0.3);border-radius:8px}
+::-webkit-scrollbar-thumb{background:rgba(245,158,11,.3);border-radius:8px}
 </style>
 </head>
 <body>
@@ -125,7 +83,7 @@ body{
     <div class="header-title">앱 모음 🌸</div>
     <div class="header-count" id="app-count">앱 0개</div>
   </div>
-  <button class="add-btn" onclick="openAdd()" aria-label="앱 추가">
+  <button class="add-btn" id="btn-add" aria-label="앱 추가">
     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   </button>
 </div>
@@ -140,7 +98,7 @@ body{
       <div class="empty-icon">🌼</div>
       <h3>아직 앱이 없어요</h3>
       <p>자주 쓰는 웹앱을 추가하면<br>여기 모여요!</p>
-      <button class="empty-btn" onclick="openAdd()">
+      <button class="empty-btn" id="btn-empty-add">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         첫 번째 앱 추가
       </button>
@@ -148,438 +106,368 @@ body{
   </div>
 </div>
 
-<!-- 앱 추가/수정 모달 -->
-<div class="overlay" id="modal-overlay" onclick="overlayClick(event)">
-  <div class="modal">
+<div class="overlay" id="modal-overlay">
+  <div class="modal" id="modal-box">
     <div class="modal-handle"></div>
-    <div class="modal-title"><span id="modal-emoji">🌸</span><span id="modal-title-text">새 앱 추가</span></div>
-
+    <div class="modal-title"><span id="modal-emoji">🌸</span>&nbsp;<span id="modal-title-text">새 앱 추가</span></div>
     <div class="form-group">
       <label class="form-label">앱 주소 URL</label>
-      <input class="form-input" type="url" id="input-url" placeholder="https://" oninput="onUrlInput(this.value)">
+      <input class="form-input" type="url" id="input-url" placeholder="https://">
     </div>
-
     <div class="preview-card" id="preview-area" style="display:none">
-      <div id="preview-icon-wrap" class="preview-icon-box">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>
-      </div>
+      <div id="preview-icon-wrap" class="preview-icon-box"></div>
       <div class="preview-info">
-        <div class="preview-name" id="preview-name">—</div>
-        <div class="preview-desc preview-loading" id="preview-desc">AI가 읽어오는 중...</div>
+        <div class="preview-name-txt" id="preview-name">—</div>
+        <div class="preview-desc-txt" id="preview-desc">—</div>
       </div>
     </div>
-
     <div class="form-group">
       <label class="form-label">앱 이름</label>
-      <input class="form-input" type="text" id="input-name" placeholder="앱 이름 (10자 이내)" maxlength="10" oninput="onNameInput(this.value)">
+      <input class="form-input" type="text" id="input-name" placeholder="앱 이름 (10자 이내)" maxlength="10">
     </div>
     <div class="form-group">
       <label class="form-label">짧은 설명</label>
-      <textarea class="form-textarea" id="input-desc" placeholder="20자 이내" maxlength="20" oninput="updateChar()"></textarea>
+      <textarea class="form-textarea" id="input-desc" placeholder="20자 이내" maxlength="20"></textarea>
       <div class="char-row"><span class="char-badge"><span id="char-count">0</span>/20</span></div>
     </div>
     <div class="btn-row">
-      <button class="btn-cancel" onclick="closeModal()">취소</button>
-      <button class="btn-save" onclick="saveApp()">저장하기</button>
-    </div>
-  </div>
-</div>
-
-<!-- 커스텀 알림/확인 대화상자 오버레이 -->
-<div class="overlay" id="custom-dialog-overlay" onclick="closeCustomDialogOverlay(event)" style="z-index: 300;">
-  <div class="modal" style="max-width: 380px; padding: 24px; border-radius: 28px; text-align: center; margin: auto; border: 2px solid rgba(245, 158, 11, 0.35);">
-    <div id="dialog-icon" style="font-size: 40px; margin-bottom: 12px;">🌸</div>
-    <h3 id="dialog-title" style="font-family:'Nanum Myeongjo',serif; font-size: 20px; color: #78350f; margin-bottom: 8px;">안내</h3>
-    <p id="dialog-message" style="font-size: 14px; color: rgba(120,53,15,0.8); line-height: 1.6; margin-bottom: 20px; word-break: keep-all;"></p>
-    <div style="display: flex; gap: 10px; justify-content: center;" id="dialog-buttons">
-      <button class="btn-cancel" id="dialog-btn-cancel" style="display:none; padding: 12px; border-radius: 14px; flex: 1;" onclick="handleDialogAction(false)">취소</button>
-      <button class="btn-save" id="dialog-btn-confirm" style="padding: 12px; border-radius: 14px; flex: 1.5; background:#f59e0b; color: white;" onclick="handleDialogAction(true)">확인</button>
+      <button class="btn-cancel" id="btn-cancel">취소</button>
+      <button class="btn-save" id="btn-save" onclick="saveApp()">저장하기</button>
     </div>
   </div>
 </div>
 
 <script>
+
 const GEMINI_KEY = 'AQ.Ab8RN6LHG6mUEABmeYcmR-VGfm_vqUcv4b30BmrYqJ_V_Tadxw';
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
-// 모델 호출 우선순위 리스트 (1순위부터 차례대로 탐색)
-const MODEL_PRIORITY = [
-  'gemini-3.1-flash-lite',
-  'gemini-3.5-flash',
-  'gemini-3-flash',
-  'gemini-2.5-flash'
-];
+/* ── 꽃 SVG 생성 함수 8종 ── */
+function makePetals(angles, rx, ry, dist, c, op) {
+  return angles.map(function(a) {
+    return '<ellipse rx="'+rx+'" ry="'+ry+'" transform="rotate('+a+') translate('+dist+',0)" fill="'+c+'" opacity="'+op+'"/>';
+  }).join('');
+}
 
-/* ── 꽃 SVG 모음 (8종 랜덤) ── */
-const FLOWERS = [
-  // 1. 해바라기풍
-  (c)=>`<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
-    <g transform="translate(22,22)">
-      ${[0,45,90,135,180,225,270,315].map(a=>`<ellipse rx="7" ry="4" transform="rotate(${a}) translate(10,0)" fill="${c}" opacity="0.9"/>`).join('')}
-      <circle r="9" fill="#f59e0b"/>
-      <circle r="5" fill="#92400e"/>
-    </g></svg>`,
-  // 2. 벚꽃
-  (c)=>`<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
-    <g transform="translate(22,22)">
-      ${[0,72,144,216,288].map(a=>`<ellipse rx="8" ry="5" transform="rotate(${a}) translate(9,0)" fill="${c}" opacity="0.85"/>`).join('')}
-      <circle r="5" fill="#fff" opacity="0.9"/>
-      <circle r="2.5" fill="${c}"/>
-    </g></svg>`,
-  // 3. 데이지
-  (c)=>`<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
-    <g transform="translate(22,22)">
-      ${[0,30,60,90,120,150,180,210,240,270,300,330].map(a=>`<ellipse rx="5" ry="3" transform="rotate(${a}) translate(9,0)" fill="${c}" opacity="0.8"/>`).join('')}
-      <circle r="6" fill="#fef3c7"/>
-      <circle r="3" fill="#f59e0b"/>
-    </g></svg>`,
-  // 4. 튤립
-  (c)=>`<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="22" cy="18" rx="8" ry="11" fill="${c}" opacity="0.9"/>
-    <ellipse cx="15" cy="22" rx="6" ry="9" fill="${c}" opacity="0.75" transform="rotate(-20,15,22)"/>
-    <ellipse cx="29" cy="22" rx="6" ry="9" fill="${c}" opacity="0.75" transform="rotate(20,29,22)"/>
-    <rect x="20" y="28" width="4" height="10" rx="2" fill="#16a34a"/>
-    <ellipse cx="16" cy="34" rx="5" ry="3" fill="#16a34a" opacity="0.7" transform="rotate(-30,16,34)"/>`,
-  // 5. 장미
-  (c)=>`<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
-    <g transform="translate(22,22)">
-      ${[0,60,120,180,240,300].map((a,i)=>`<ellipse rx="${9-i*0.5}" ry="${6-i*0.3}" transform="rotate(${a+i*15}) translate(${6-i},0)" fill="${c}" opacity="${0.9-i*0.08}"/>`).join('')}
-      <circle r="4" fill="${c}" opacity="1"/>
-      <circle r="2" fill="#fff" opacity="0.5"/>
-    </g></svg>`,
-  // 6. 코스모스
-  (c)=>`<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
-    <g transform="translate(22,22)">
-      ${[0,45,90,135,180,225,270,315].map(a=>`<path d="M0,0 Q${3},${-10} 0,${-16} Q${-3},${-10} 0,0" transform="rotate(${a})" fill="${c}" opacity="0.85"/>`).join('')}
-      <circle r="5" fill="#fef08a"/>
-      <circle r="2.5" fill="#f59e0b"/>
-    </g></svg>`,
-  // 7. 클로버꽃
-  (c)=>`<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
-    <g transform="translate(22,22)">
-      ${[0,90,180,270].map(a=>`<circle r="8" cx="0" cy="-10" transform="rotate(${a})" fill="${c}" opacity="0.82"/>`).join('')}
-      <circle r="5" fill="#fff" opacity="0.9"/>
-      <circle r="2.5" fill="${c}"/>
-    </g></svg>`,
-  // 8. 수국
-  (c)=>`<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
-    <g transform="translate(22,22)">
-      ${[-8,-8,8,8,-8,8].map((x,i)=>{const y=[-8,8,-8,8,0,0][i];return`<circle r="7" cx="${x}" cy="${y}" fill="${c}" opacity="0.78"/>`;}).join('')}
-      ${[[-8,-8],[8,-8],[-8,8],[8,8],[-10,0],[10,0],[0,-10],[0,10]].map(([x,y])=>`<circle r="5" cx="${x}" cy="${y}" fill="${c}" opacity="0.72"/>`).join('')}
-      <circle r="4" fill="#fff" opacity="0.6"/>
-    </g></svg>`,
+const FLOWER_FNS = [
+  function(c) { // 해바라기
+    return '<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22,22)">'+makePetals([0,45,90,135,180,225,270,315],7,4,10,c,0.9)+'<circle r="9" fill="#f59e0b"/><circle r="5" fill="#92400e"/></g></svg>';
+  },
+  function(c) { // 벚꽃
+    return '<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22,22)">'+makePetals([0,72,144,216,288],8,5,9,c,0.85)+'<circle r="5" fill="#fff" opacity="0.9"/><circle r="2.5" fill="'+c+'"/></g></svg>';
+  },
+  function(c) { // 데이지
+    return '<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22,22)">'+makePetals([0,30,60,90,120,150,180,210,240,270,300,330],5,3,9,c,0.8)+'<circle r="6" fill="#fef3c7"/><circle r="3" fill="#f59e0b"/></g></svg>';
+  },
+  function(c) { // 튤립
+    return '<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><ellipse cx="22" cy="18" rx="8" ry="11" fill="'+c+'" opacity="0.9"/><ellipse cx="15" cy="22" rx="6" ry="9" fill="'+c+'" opacity="0.75" transform="rotate(-20,15,22)"/><ellipse cx="29" cy="22" rx="6" ry="9" fill="'+c+'" opacity="0.75" transform="rotate(20,29,22)"/><rect x="20" y="28" width="4" height="10" rx="2" fill="#16a34a"/><ellipse cx="16" cy="34" rx="5" ry="3" fill="#16a34a" opacity="0.7" transform="rotate(-30,16,34)"/></svg>';
+  },
+  function(c) { // 장미
+    var petals = [0,60,120,180,240,300].map(function(a,i) {
+      return '<ellipse rx="'+(9-i*0.5)+'" ry="'+(6-i*0.3)+'" transform="rotate('+(a+i*15)+') translate('+(6-i)+',0)" fill="'+c+'" opacity="'+(0.9-i*0.08).toFixed(2)+'"/>';
+    }).join('');
+    return '<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22,22)">'+petals+'<circle r="4" fill="'+c+'"/><circle r="2" fill="#fff" opacity="0.5"/></g></svg>';
+  },
+  function(c) { // 코스모스
+    var petals = [0,45,90,135,180,225,270,315].map(function(a) {
+      return '<path d="M0,0 Q3,-10 0,-16 Q-3,-10 0,0" transform="rotate('+a+')" fill="'+c+'" opacity="0.85"/>';
+    }).join('');
+    return '<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22,22)">'+petals+'<circle r="5" fill="#fef08a"/><circle r="2.5" fill="#f59e0b"/></g></svg>';
+  },
+  function(c) { // 클로버꽃
+    var petals = [0,90,180,270].map(function(a) {
+      return '<circle r="8" cx="0" cy="-10" transform="rotate('+a+')" fill="'+c+'" opacity="0.82"/>';
+    }).join('');
+    return '<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22,22)">'+petals+'<circle r="5" fill="#fff" opacity="0.9"/><circle r="2.5" fill="'+c+'"/></g></svg>';
+  },
+  function(c) { // 수국
+    var pts = [[-8,-8],[8,-8],[-8,8],[8,8],[-10,0],[10,0],[0,-10],[0,10]];
+    var circles = pts.map(function(p) {
+      return '<circle r="5" cx="'+p[0]+'" cy="'+p[1]+'" fill="'+c+'" opacity="0.72"/>';
+    }).join('');
+    return '<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22,22)">'+circles+'<circle r="4" fill="#fff" opacity="0.6"/></g></svg>';
+  }
 ];
 
 const FLOWER_BG = [
   '#fde68a','#fecaca','#bbf7d0','#bfdbfe','#ddd6fe','#fed7aa','#fbcfe8','#a7f3d0',
-  '#fef08a','#fca5a5','#6ee7b7','#93c5fd','#c4b5fd','#fdba74','#f9a8d4','#34d399',
+  '#fef08a','#fca5a5','#6ee7b7','#93c5fd','#c4b5fd','#fdba74','#f9a8d4','#34d399'
 ];
 
-function randomFlower(name) {
-  const seed = [...(name||'가')].reduce((a,c)=>a+c.charCodeAt(0),0);
-  const fi = seed % FLOWERS.length;
-  const bi = (seed * 7 + 3) % FLOWER_BG.length;
-  return { svgFn: FLOWERS[fi], bg: FLOWER_BG[bi], idx: fi };
+function getFlowerInfo(name) {
+  var seed = 0;
+  var s = name || '가';
+  for (var i = 0; i < s.length; i++) seed += s.charCodeAt(i);
+  return {
+    fn: FLOWER_FNS[seed % FLOWER_FNS.length],
+    bg: FLOWER_BG[(seed * 7 + 3) % FLOWER_BG.length]
+  };
 }
 
-/* ── 아이콘 HTML ── */
-function iconHtml(a) {
-  // 사용자의 요구사항: 앱 종류와 무관하게 항상 무작위(매칭된) 꽃 모양 아이콘으로 단일화합니다.
-  return flowerIconHtml(a.name, a.url);
-}
-
-function flowerIconHtml(name, url) {
-  const {svgFn, bg} = randomFlower(name);
-  const svg = svgFn('#fff').replace(/\n\s*/g, ' ');
-  return `<div class="flower-icon" style="background:${bg};box-shadow:0 4px 14px rgba(0,0,0,0.15)" onclick="openApp('${esc(url)}')">${svg}</div>`;
-}
-
-function flowerIconHtmlPreview(name) {
-  const {svgFn, bg} = randomFlower(name);
-  const svg = svgFn('#fff').replace(/\n\s*/g, ' ');
-  return `<div class="preview-flower-box" style="background:${bg}">${svg}</div>`;
+function makeFlowerDiv(name, url, isPreview) {
+  var info = getFlowerInfo(name);
+  var svg = info.fn('#fff');
+  var size = isPreview ? '52px' : '64px';
+  var radius = isPreview ? '16px' : '20px';
+  var cls = isPreview ? 'preview-flower-box' : 'flower-icon';
+  var shadow = isPreview ? '' : 'box-shadow:0 4px 14px rgba(0,0,0,0.15);';
+  var onclick = url ? ' onclick="APP.open(\''+escAttr(url)+'\')"' : '';
+  return '<div class="'+cls+'" style="background:'+info.bg+';width:'+size+';height:'+size+';border-radius:'+radius+';'+shadow+'"'+onclick+'>'+svg+'</div>';
 }
 
 /* ── 유틸 ── */
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
-function getDomain(url){try{return new URL(url).hostname}catch(e){return url}}
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escAttr(s) {
+  return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
+function getDomain(url) {
+  try { return new URL(url).hostname; } catch(e) { return url; }
+}
 
-/* ── 커스텀 알림/대화창 ── */
-let dialogResolve = null;
-
-function showCustomAlert(message, emoji = '🌸', title = '안내') {
-  document.getElementById('dialog-icon').textContent = emoji;
-  document.getElementById('dialog-title').textContent = title;
-  document.getElementById('dialog-message').textContent = message;
-  document.getElementById('dialog-btn-cancel').style.display = 'none';
-  document.getElementById('dialog-btn-confirm').textContent = '확인';
-  
-  document.getElementById('custom-dialog-overlay').classList.add('open');
-  
-  return new Promise(resolve => {
-    dialogResolve = resolve;
+/* ── 파비콘 ── */
+function probeImage(src) {
+  return new Promise(function(resolve) {
+    var img = new Image();
+    img.onload = function() { resolve(src); };
+    img.onerror = function() { resolve(null); };
+    img.src = src;
+    setTimeout(function() { resolve(null); }, 2500);
   });
 }
-
-function showCustomConfirm(message, emoji = '🗑️', title = '확인') {
-  document.getElementById('dialog-icon').textContent = emoji;
-  document.getElementById('dialog-title').textContent = title;
-  document.getElementById('dialog-message').textContent = message;
-  document.getElementById('dialog-btn-cancel').style.display = 'block';
-  document.getElementById('dialog-btn-confirm').textContent = '삭제';
-  
-  document.getElementById('custom-dialog-overlay').classList.add('open');
-  
-  return new Promise(resolve => {
-    dialogResolve = resolve;
-  });
+async function resolveFavicon(url) {
+  try {
+    var u = new URL(url);
+    var candidates = [
+      'https://www.google.com/s2/favicons?sz=64&domain='+u.hostname,
+      'https://icons.duckduckgo.com/ip3/'+u.hostname+'.ico',
+      u.origin+'/favicon.ico',
+      u.origin+'/favicon.png'
+    ];
+    for (var i = 0; i < candidates.length; i++) {
+      var r = await probeImage(candidates[i]);
+      if (r) return r;
+    }
+  } catch(e) {}
+  return '';
 }
 
-function handleDialogAction(status) {
-  document.getElementById('custom-dialog-overlay').classList.remove('open');
-  if (dialogResolve) {
-    dialogResolve(status);
-    dialogResolve = null;
-  }
-}
+/* ── 앱 상태 ── */
+var apps = [];
+var editingId = null;
+var urlTimer = null;
+var pendingIcon = '';
+var pendingName = '';
 
-function closeCustomDialogOverlay(e) {
-  if (e.target === document.getElementById('custom-dialog-overlay')) {
-    handleDialogAction(false);
-  }
-}
-
-/* ── 데이터 렌더링 ── */
-let apps=[],editingId=null,urlTimer=null;
-
-function loadApps(){
-  try{
-    apps=JSON.parse(localStorage.getItem('cenon-apps')||'[]');
-  }catch(e){
-    apps=[];
-  }
+function loadApps() {
+  try { apps = JSON.parse(localStorage.getItem('cenon-apps') || '[]'); } catch(e) { apps = []; }
   render();
 }
-
-function saveApps(){
+function saveApps() {
   try {
-    localStorage.setItem('cenon-apps',JSON.stringify(apps));
+    localStorage.setItem('cenon-apps', JSON.stringify(apps));
   } catch(e) {
-    console.error("Local storage error:", e);
+    console.error('localStorage 저장 실패:', e);
   }
 }
 
-function render(){
-  const grid=document.getElementById('app-grid');
-  const empty=document.getElementById('empty-state');
-  const gw=document.getElementById('grid-wrap');
-  document.getElementById('app-count').textContent=`앱 ${apps.length}개`;
-  if(!apps.length){gw.style.display='none';empty.style.display='block';return}
-  empty.style.display='none';gw.style.display='block';
-  grid.innerHTML=apps.map((a,i)=>`
-    <div class="app-item" style="animation-delay:${i*35}ms">
-      <div class="app-actions">
-        <button class="act-btn act-edit" onclick="openEdit('${a.id}')">✏️</button>
-        <button class="act-btn act-del" onclick="deleteApp('${a.id}')">🗑️</button>
-      </div>
-      ${iconHtml(a)}
-      <div class="app-name">${esc(a.name)}</div>
-    </div>
-  `).join('');
+/* ── 렌더 ── */
+function render() {
+  var grid = document.getElementById('app-grid');
+  var empty = document.getElementById('empty-state');
+  var gw = document.getElementById('grid-wrap');
+  document.getElementById('app-count').textContent = '앱 '+apps.length+'개';
+  if (!apps.length) { gw.style.display='none'; empty.style.display='block'; return; }
+  empty.style.display='none'; gw.style.display='block';
+  grid.innerHTML = apps.map(function(a, i) {
+    var iconHtml;
+    if (a.icon) {
+      iconHtml = '<div class="app-icon-img" onclick="APP.open(\''+escAttr(a.url)+'\')"><img src="'+escHtml(a.icon)+'" alt="" onerror="APP.swapToFlower(this,\''+escAttr(a.name)+'\',\''+escAttr(a.url)+'\')"></div>';
+    } else {
+      iconHtml = makeFlowerDiv(a.name, a.url, false);
+    }
+    return '<div class="app-item" style="animation-delay:'+i*35+'ms">'
+      +'<div class="app-actions">'
+      +'<button class="act-btn act-edit" onclick="APP.edit(\''+a.id+'\')">✏️</button>'
+      +'<button class="act-btn act-del" onclick="APP.del(\''+a.id+'\')">🗑️</button>'
+      +'</div>'
+      +iconHtml
+      +'<div class="app-name">'+escHtml(a.name)+'</div>'
+      +'</div>';
+  }).join('');
 }
-function openApp(url){window.open(url,'_blank')}
 
 /* ── 모달 ── */
-function resetModal() {
-  document.getElementById('input-url').value='';
-  document.getElementById('input-name').value='';
-  document.getElementById('input-desc').value='';
-  document.getElementById('char-count').textContent='0';
-  document.getElementById('preview-area').style.display='none';
-}
-function openAdd(){
-  editingId=null;resetModal();
-  document.getElementById('modal-emoji').textContent='🌸';
-  document.getElementById('modal-title-text').textContent='새 앱 추가';
-  document.getElementById('modal-overlay').classList.add('open');
-}
-function openEdit(id){
-  const a=apps.find(x=>x.id===id);if(!a)return;
-  editingId=id;resetModal();
-  document.getElementById('modal-emoji').textContent='✏️';
-  document.getElementById('modal-title-text').textContent='앱 수정';
-  document.getElementById('input-url').value=a.url;
-  document.getElementById('input-name').value=a.name;
-  document.getElementById('input-desc').value=a.desc||'';
-  document.getElementById('char-count').textContent=(a.desc||'').length;
-  setPreview(a.name,a.desc||'');
-  document.getElementById('modal-overlay').classList.add('open');
-}
-function closeModal(){document.getElementById('modal-overlay').classList.remove('open')}
-function overlayClick(e){if(e.target===document.getElementById('modal-overlay'))closeModal()}
+function openModal() { document.getElementById('modal-overlay').classList.add('open'); }
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
 
-function updateChar(){
-  const v=document.getElementById('input-desc').value;
-  document.getElementById('char-count').textContent=v.length;
-  document.getElementById('preview-desc').textContent=v||'설명 없음';
-  document.getElementById('preview-desc').className='preview-desc';
+function resetForm() {
+  pendingIcon = ''; pendingName = '';
+  document.getElementById('input-url').value = '';
+  document.getElementById('input-name').value = '';
+  document.getElementById('input-desc').value = '';
+  document.getElementById('char-count').textContent = '0';
+  document.getElementById('preview-area').style.display = 'none';
 }
 
-// 사용자가 이름을 입력할 때도 실시간으로 꽃 모양과 배경 색이 어울리게 갱신되도록 개선
-function onNameInput(val) {
-  const desc = document.getElementById('input-desc').value;
-  setPreview(val, desc);
+function openAdd() {
+  editingId = null; resetForm();
+  document.getElementById('modal-emoji').textContent = '🌸';
+  document.getElementById('modal-title-text').textContent = '새 앱 추가';
+  openModal();
 }
 
-// 항상 무작위/매칭 꽃 무늬 아이콘으로 렌더링하도록 갱신
-function setPreview(name, desc) {
+function openEdit(id) {
+  var a = apps.find(function(x) { return x.id === id; });
+  if (!a) return;
+  editingId = id; resetForm();
+  pendingIcon = a.icon || ''; pendingName = a.name;
+  document.getElementById('modal-emoji').textContent = '✏️';
+  document.getElementById('modal-title-text').textContent = '앱 수정';
+  document.getElementById('input-url').value = a.url;
+  document.getElementById('input-name').value = a.name;
+  document.getElementById('input-desc').value = a.desc || '';
+  document.getElementById('char-count').textContent = (a.desc||'').length;
+  setPreview(a.name, a.desc||'', a.icon||'', false);
+  openModal();
+}
+
+function setPreview(name, desc, icon, loading) {
   document.getElementById('preview-area').style.display = 'flex';
   document.getElementById('preview-name').textContent = name || '—';
-  document.getElementById('preview-desc').textContent = desc || '—';
-  document.getElementById('preview-desc').className = 'preview-desc';
-  
-  const wrap = document.getElementById('preview-icon-wrap');
-  if (!wrap) return;
-
-  if (name) {
-    const { svgFn, bg } = randomFlower(name);
-    const svg = svgFn('#fff').replace(/\n\s*/g, ' ');
-    wrap.className = 'preview-flower-box';
-    wrap.style.background = bg;
-    wrap.innerHTML = svg;
-  } else {
-    // 기본 지구본 형상
+  var descEl = document.getElementById('preview-desc');
+  descEl.textContent = loading ? 'AI가 읽어오는 중...' : (desc || '—');
+  descEl.className = 'preview-desc-txt' + (loading ? ' loading-anim' : '');
+  var wrap = document.getElementById('preview-icon-wrap');
+  if (icon) {
     wrap.className = 'preview-icon-box';
     wrap.style.background = '';
-    wrap.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>`;
+    wrap.innerHTML = '<img src="'+escHtml(icon)+'" alt="" style="width:34px;height:34px;object-fit:contain">';
+  } else if (name) {
+    var flower = makeFlowerDiv(name, '', true);
+    var tmp = document.createElement('div');
+    tmp.innerHTML = flower;
+    var newEl = tmp.firstElementChild;
+    newEl.id = 'preview-icon-wrap';
+    wrap.replaceWith(newEl);
+  } else {
+    wrap.className = 'preview-icon-box';
+    wrap.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>';
   }
 }
 
 /* ── URL 입력 ── */
-function onUrlInput(val){
+document.getElementById('input-url').addEventListener('input', function() {
   clearTimeout(urlTimer);
-  if(!val.trim()){document.getElementById('preview-area').style.display='none';return}
-  urlTimer=setTimeout(()=>fetchMeta(val.trim()),700);
-}
+  var val = this.value.trim();
+  if (!val) { document.getElementById('preview-area').style.display='none'; return; }
+  urlTimer = setTimeout(function() { fetchMeta(val); }, 700);
+});
 
-async function fetchMeta(url){
-  if(!/^https?:\/\//.test(url))url='https://'+url;
-  document.getElementById('input-url').value=url;
-  const domain=getDomain(url);
-  const nameEl=document.getElementById('input-name');
+document.getElementById('input-desc').addEventListener('input', function() {
+  document.getElementById('char-count').textContent = this.value.length;
+  document.getElementById('preview-desc').textContent = this.value || '설명 없음';
+  document.getElementById('preview-desc').className = 'preview-desc-txt';
+});
 
-  // 로딩 시작 상태
-  document.getElementById('preview-area').style.display='flex';
-  document.getElementById('preview-name').textContent=domain.replace('www.','');
-  document.getElementById('preview-desc').className='preview-desc preview-loading';
-  document.getElementById('preview-desc').textContent='AI가 읽어오는 중...';
-  
-  const wrap=document.getElementById('preview-icon-wrap');
-  if(wrap) {
-    wrap.className='preview-icon-box';
-    wrap.style.background='';
-    wrap.innerHTML=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>`;
-  }
+async function fetchMeta(url) {
+  if (!/^https?:\/\//.test(url)) url = 'https://'+url;
+  document.getElementById('input-url').value = url;
+  var domain = getDomain(url);
+  var nameEl = document.getElementById('input-name');
+  var autoName = domain.replace('www.','').split('.')[0];
 
-  // 파비콘 탐색 프로세스는 제외하고, Gemini AI 메타 정보만 비동기 획득하여 속도를 혁신적으로 향상시킵니다.
-  const aiResult = await callGemini(url, domain);
+  setPreview(autoName, '', '', true);
+  if (!nameEl.value) nameEl.value = autoName;
 
-  const aiName = aiResult.name || '';
-  const aiDesc = aiResult.desc || '';
-  const finalName = aiName || domain.replace('www.','').split('.')[0];
+  var results = await Promise.all([resolveFavicon(url), callGemini(url, domain)]);
+  var faviconUrl = results[0];
+  var aiResult = results[1];
 
-  if(!nameEl.value || nameEl.value === domain.replace('www.','').split('.')[0]) {
+  var aiName = aiResult.name || '';
+  var aiDesc = aiResult.desc || '';
+  var finalName = aiName || autoName;
+
+  if (!nameEl.value || nameEl.value === autoName) {
     nameEl.value = finalName;
   }
-  document.getElementById('preview-name').textContent = finalName;
+  pendingIcon = faviconUrl;
+  pendingName = finalName;
+
   document.getElementById('input-desc').value = aiDesc;
   document.getElementById('char-count').textContent = aiDesc.length;
-  document.getElementById('preview-desc').className = 'preview-desc';
-  document.getElementById('preview-desc').textContent = aiDesc || '설명을 직접 입력해 주세요';
-
-  // 로딩이 완료되면 즉시 이름 해시에 매칭되는 꽃 아이콘을 생성해 보여줍니다.
-  if(wrap) {
-    const {svgFn, bg} = randomFlower(finalName);
-    const svg = svgFn('#fff').replace(/\n\s*/g,' ');
-    wrap.className='preview-flower-box';
-    wrap.style.background=bg;
-    wrap.innerHTML=svg;
-  }
+  setPreview(finalName, aiDesc, faviconUrl, false);
 }
 
-/* ── API 우선순위 폴백(Fallback) 연동 구현 ── */
-async function callGemini(url, domain){
-  for (const modelName of MODEL_PRIORITY) {
-    try {
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_KEY}`;
-      console.log(`요청 모델: ${modelName}`);
-      
-      const res = await fetch(endpoint, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          contents:[{parts:[{text:
-            `다음 웹사이트의 정보를 분석해서 JSON으로만 답해줘. 다른 말은 절대 쓰지 마.\n` +
-            `URL: ${url}\n도메인: ${domain}\n\n` +
-            `{\n` +
-            `  "name": "이 웹서비스/앱의 실제 한국어 이름 또는 서비스명. 도메인 랜덤 문자열은 절대 쓰지 말고, 페이지 타이틀이나 서비스 특성으로 유추해. 10자 이내",\n` +
-            `  "desc": "이 서비스를 한국어로 20자 이내 한 줄 설명. 이모지 없이"\n` +
-            `}`
-          }]}],
-          generationConfig:{maxOutputTokens:120,temperature:0.2}
-        })
-      });
-
-      if (!res.ok) {
-        console.warn(`모델 ${modelName} 호출 실패(상태코드: ${res.status}). 다음 우선순위로 진행합니다.`);
-        continue;
-      }
-
-      const data = await res.json();
-      const raw = (data?.candidates?.[0]?.content?.parts?.[0]?.text||'').trim();
-      const clean = raw.replace(/```json|```/g,'').trim();
-      const json = JSON.parse(clean);
-      
-      return {
-        name: (json.name||'').replace(/["'「『」』]/g,'').slice(0,10),
-        desc: (json.desc||'').replace(/["'「『」』]/g,'').slice(0,20)
-      };
-    } catch(e) {
-      console.error(`모델 ${modelName} 처리 오류:`, e);
-    }
-  }
-  return {name:'', desc:''};
+async function callGemini(url, domain) {
+  try {
+    var prompt = '다음 웹사이트를 분석해서 아래 JSON 형식으로만 답해줘. 다른 말은 절대 쓰지 마.\n'
+      + 'URL: '+url+'\n도메인: '+domain+'\n\n'
+      + '{\n'
+      + '  "name": "이 웹서비스의 실제 이름이나 서비스명. 도메인의 랜덤 문자열(예:illustrious-bonbon 같은 것)은 절대 쓰지 말고, 서비스 특성으로 유추한 한국어 이름. 10자 이내",\n'
+      + '  "desc": "서비스 한 줄 설명. 한국어 20자 이내. 이모지 없이"\n'
+      + '}';
+    var res = await fetch(GEMINI_URL+'?key='+GEMINI_KEY, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        contents: [{parts:[{text: prompt}]}],
+        generationConfig: {maxOutputTokens:120, temperature:0.2}
+      })
+    });
+    var data = await res.json();
+    var raw = ((data.candidates||[])[0]||{});
+    var text = ((raw.content||{}).parts||[{text:''}])[0].text || '';
+    var clean = text.trim().replace(/```json|```/g,'').trim();
+    var json = JSON.parse(clean);
+    return {
+      name: (json.name||'').replace(/["']/g,'').slice(0,10),
+      desc: (json.desc||'').replace(/["']/g,'').slice(0,20)
+    };
+  } catch(e) { return {name:'', desc:''}; }
 }
 
-/* ── 저장 및 삭제 ── */
-async function saveApp(){
-  const url=document.getElementById('input-url').value.trim();
-  const name=document.getElementById('input-name').value.trim();
-  const desc=document.getElementById('input-desc').value.trim();
-  
-  if(!url||!name){
-    await showCustomAlert('URL과 이름을 입력해 주세요 🌸', '⚠️', '입력 오류');
-    return;
-  }
-  
-  const entry={url,name,desc};
-  if(editingId){
-    const i=apps.findIndex(a=>a.id===editingId);
-    if(i>=0) apps[i]={...apps[i],...entry};
+/* ── 저장/삭제 ── */
+function saveApp() {
+  var url = document.getElementById('input-url').value.trim();
+  var name = document.getElementById('input-name').value.trim();
+  var desc = document.getElementById('input-desc').value.trim();
+  if (!url || !name) { alert('URL과 이름을 입력해 주세요 🌸'); return; }
+  var entry = {url:url, name:name, desc:desc, icon:pendingIcon};
+  if (editingId) {
+    var idx = apps.findIndex(function(a) { return a.id===editingId; });
+    if (idx>=0) apps[idx] = Object.assign({}, apps[idx], entry);
   } else {
-    apps.push({id:Date.now().toString(),...entry});
+    apps.push(Object.assign({id: Date.now().toString()}, entry));
   }
-  saveApps();
-  render();
-  closeModal();
+  saveApps(); render(); closeModal();
 }
 
-async function deleteApp(id){
-  const confirmed = await showCustomConfirm('이 앱을 삭제할까요?', '🗑️', '앱 삭제');
-  if(!confirmed) return;
-  apps=apps.filter(a=>a.id!==id);
-  saveApps();
-  render();
-}
+/* ── 전역 앱 객체 (onclick용) ── */
+window.APP = {
+  open: function(url) { window.open(url,'_blank'); },
+  edit: function(id) { openEdit(id); },
+  del: function(id) {
+    if (!confirm('이 앱을 삭제할까요?')) return;
+    apps = apps.filter(function(a) { return a.id!==id; });
+    saveApps(); render();
+  },
+  swapToFlower: function(img, name, url) {
+    var wrap = img.closest('.app-icon-img');
+    if (!wrap) return;
+    wrap.outerHTML = makeFlowerDiv(name, url, false);
+  }
+};
+
+/* ── 이벤트 바인딩 ── */
+document.getElementById('btn-add').addEventListener('click', openAdd);
+document.getElementById('btn-empty-add').addEventListener('click', openAdd);
+document.getElementById('btn-cancel').addEventListener('click', closeModal);
+document.getElementById('btn-save').addEventListener('click', saveApp);
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
 
 loadApps();
 </script>
