@@ -2,778 +2,597 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>센온 어플모음</title>
-<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --pink: #FF8FAB;
-    --pink-light: #FFD6E0;
-    --pink-pale: #FFF0F4;
-    --yellow: #FFD166;
-    --yellow-light: #FFF3CD;
-    --mint: #95E1D3;
-    --mint-light: #E0F7F4;
-    --lavender: #C3B1E1;
-    --lavender-light: #EDE7F6;
-    --bg: #FFF8FA;
-    --card: #FFFFFF;
-    --text: #3D2C35;
-    --text-muted: #A08C96;
-    --border: #F2D9E2;
-    --shadow: rgba(255,143,171,0.18);
-  }
+*{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+body{
+  font-family:'Nanum Gothic',sans-serif;
+  min-height:100vh;
+  background: #e8f4ff;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% -10%, #dbeafe 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 90% 110%, #bfdbfe 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, #e0f2fe 0%, transparent 60%);
+  background-attachment: fixed;
+}
 
-  body {
-    font-family: 'Nanum Gothic', sans-serif;
-    background: var(--bg);
-    min-height: 100vh;
-    background-image:
-      radial-gradient(circle at 15% 20%, rgba(255,214,224,0.55) 0%, transparent 40%),
-      radial-gradient(circle at 85% 80%, rgba(195,177,225,0.35) 0%, transparent 40%);
-  }
+/* ── 헤더 ── */
+.header{
+  padding: 52px 20px 16px;
+  display:flex; align-items:flex-end; justify-content:space-between;
+}
+.header-left{ display:flex; flex-direction:column; gap:2px; }
+.header-eyebrow{
+  font-size:11px; font-weight:700; letter-spacing:0.12em;
+  color:rgba(30,80,180,0.6); text-transform:uppercase;
+}
+.header-title{
+  font-family:'Nunito',sans-serif;
+  font-size:28px; font-weight:900; line-height:1;
+  background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.header-count{
+  font-size:12px; color:rgba(30,80,180,0.55); margin-top:3px; font-weight:600;
+}
+.add-btn{
+  width:46px; height:46px; border-radius:50%; border:none; cursor:pointer;
+  background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 8px 24px rgba(37,99,235,0.45);
+  transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+  flex-shrink:0;
+}
+.add-btn:hover{ transform:scale(1.12) rotate(90deg); box-shadow:0 12px 32px rgba(37,99,235,0.55); }
+.add-btn:active{ transform:scale(0.9); }
+.add-btn svg{ width:22px; height:22px; stroke:#fff; stroke-width:2.5; fill:none; }
 
-  /* ── 헤더 ── */
-  .header {
-    background: var(--card);
-    border-bottom: 2px dashed var(--pink-light);
-    padding: 14px 18px 12px;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+/* ── 메인 ── */
+.main{ padding:8px 16px 100px; }
 
-  .header-left { display: flex; align-items: center; gap: 8px; }
+/* ── 앱 그리드 ── */
+.grid{
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:16px 10px;
+}
 
-  .header-emoji {
-    font-size: 26px;
-    line-height: 1;
-    animation: bounce 2.4s ease-in-out infinite;
-  }
+/* ── 앱 아이템 ── */
+.app-item{
+  display:flex; flex-direction:column; align-items:center; gap:7px;
+  position:relative;
+  animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes popIn{
+  from{ transform:scale(0.5) translateY(10px); opacity:0; }
+  to{   transform:scale(1) translateY(0);      opacity:1; }
+}
 
-  @keyframes bounce {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-  }
+/* 아이콘 공통 */
+.app-icon-wrap, .letter-icon{
+  width:64px; height:64px; border-radius:20px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; overflow:hidden; flex-shrink:0;
+  transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.18s;
+}
+.app-icon-wrap{
+  background:#fff;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.15), 0 1px 3px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255,255,255,0.9);
+}
+.app-icon-wrap img{ width:40px; height:40px; object-fit:contain; }
+.app-icon-wrap:hover, .letter-icon:hover{
+  transform: translateY(-5px) scale(1.08);
+  box-shadow: 0 12px 28px rgba(37,99,235,0.28);
+}
+.app-icon-wrap:active, .letter-icon:active{ transform:scale(0.92); }
 
-  .header-texts h1 {
-    font-family: 'Gaegu', cursive;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1;
-  }
+.letter-icon{
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  font-family:'Nunito',sans-serif; font-size:26px; font-weight:900; color:#fff;
+}
 
-  .header-texts span {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 400;
-  }
+.app-name{
+  font-size:10.5px; color:#1e3a8a; text-align:center;
+  max-width:68px; line-height:1.35; font-weight:700;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  word-break:keep-all;
+}
 
-  .add-btn {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--pink) 0%, #FF6B9D 100%);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 14px rgba(255,107,157,0.45);
-    transition: transform 0.18s, box-shadow 0.18s;
-    font-size: 22px;
-    color: #fff;
-    font-weight: 700;
-    line-height: 1;
-  }
+/* 수정/삭제 버튼 */
+.app-actions{
+  position:absolute; top:-6px; right:-2px;
+  display:flex; gap:3px; opacity:0; transition:opacity 0.18s; z-index:5;
+}
+.app-item:hover .app-actions{ opacity:1; }
+.act-btn{
+  width:22px; height:22px; border-radius:50%; border:2px solid #fff;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  font-size:9px; transition:transform 0.15s;
+  box-shadow:0 2px 8px rgba(0,0,0,0.18);
+}
+.act-btn:hover{ transform:scale(1.25); }
+.act-edit{ background:#fbbf24; color:#78350f; }
+.act-del { background:#f87171; color:#7f1d1d; }
 
-  .add-btn:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 6px 18px rgba(255,107,157,0.55); }
-  .add-btn:active { transform: scale(0.95); }
+/* ── 빈 상태 ── */
+.empty{ text-align:center; padding:60px 20px 40px; }
+.empty-card{
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(20px);
+  border-radius:28px; padding:36px 24px;
+  border:1px solid rgba(255,255,255,0.8);
+  box-shadow: 0 8px 32px rgba(168,85,247,0.1);
+}
+.empty-icon{
+  width:72px; height:72px; border-radius:24px; margin:0 auto 18px;
+  background: linear-gradient(135deg,#2563eb,#06b6d4);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 8px 24px rgba(37,99,235,0.4);
+  font-size:32px;
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-8px); }
+}
+.empty h3{
+  font-family:'Nunito',sans-serif; font-size:20px; font-weight:900;
+  color:#1e3a8a; margin-bottom:8px;
+}
+.empty p{ font-size:13px; color:rgba(30,60,130,0.65); line-height:1.7; }
+.empty-btn{
+  margin-top:22px; display:inline-flex; align-items:center; gap:8px;
+  background:linear-gradient(135deg,#2563eb,#06b6d4);
+  color:#fff; border:none; border-radius:30px; padding:12px 26px;
+  font-size:14px; font-family:'Nanum Gothic',sans-serif; font-weight:700;
+  cursor:pointer; box-shadow:0 6px 20px rgba(37,99,235,0.45);
+  transition:transform 0.18s, box-shadow 0.18s;
+}
+.empty-btn:hover{ transform:scale(1.05); box-shadow:0 10px 28px rgba(37,99,235,0.55); }
 
-  /* ── 메인 ── */
-  .main { padding: 16px 14px 80px; max-width: 480px; margin: 0 auto; }
+/* ── 섹션 타이틀 ── */
+.section-title{
+  font-family:'Nunito',sans-serif; font-size:13px; font-weight:800;
+  color:rgba(30,80,180,0.5); letter-spacing:0.08em; text-transform:uppercase;
+  margin-bottom:14px; padding-left:2px;
+}
 
-  /* ── 섹션 분류 뱃지 ── */
-  .cat-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: var(--pink-light);
-    color: #C94070;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 20px;
-    margin-bottom: 10px;
-  }
+/* ── 오버레이 & 모달 ── */
+.overlay{
+  position:fixed; inset:0;
+  background:rgba(10,30,80,0.35);
+  backdrop-filter:blur(8px);
+  display:flex; align-items:flex-end; justify-content:center;
+  z-index:200; opacity:0; pointer-events:none; transition:opacity 0.25s;
+}
+.overlay.open{ opacity:1; pointer-events:all; }
 
-  /* ── 앱 그리드 ── */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-  }
+.modal{
+  background: rgba(255,255,255,0.92);
+  backdrop-filter:blur(30px);
+  border-radius:32px 32px 0 0;
+  width:100%; max-width:480px;
+  padding:10px 20px 40px;
+  border-top:1px solid rgba(255,255,255,0.95);
+  box-shadow:0 -4px 40px rgba(37,99,235,0.18);
+  transform:translateY(100%);
+  transition:transform 0.32s cubic-bezier(0.32,0.72,0,1);
+}
+.overlay.open .modal{ transform:translateY(0); }
 
-  /* ── 앱 아이템 ── */
-  .app-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    position: relative;
-    animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  }
+.modal-handle{
+  width:36px; height:4px; border-radius:4px;
+  background:rgba(37,99,235,0.2); margin:0 auto 20px;
+}
+.modal-title{
+  font-family:'Nunito',sans-serif; font-size:22px; font-weight:900;
+  color:#1e3a8a; margin-bottom:18px; display:flex; align-items:center; gap:8px;
+}
 
-  @keyframes popIn {
-    from { transform: scale(0.6); opacity: 0; }
-    to   { transform: scale(1);   opacity: 1; }
-  }
+/* 미리보기 카드 */
+.preview-card{
+  display:flex; align-items:center; gap:14px;
+  background:linear-gradient(135deg,rgba(37,99,235,0.06),rgba(6,182,212,0.06));
+  border:1.5px solid rgba(37,99,235,0.18);
+  border-radius:20px; padding:14px 16px; margin-bottom:16px;
+}
+.preview-icon-wrap{
+  width:52px; height:52px; border-radius:16px;
+  background:#fff; border:1px solid rgba(37,99,235,0.15);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; flex-shrink:0;
+  box-shadow:0 2px 12px rgba(37,99,235,0.12);
+}
+.preview-icon-wrap img{ width:34px; height:34px; object-fit:contain; }
+.preview-letter-wrap{
+  width:52px; height:52px; border-radius:16px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; font-family:'Nunito',sans-serif; font-size:22px; font-weight:900; color:#fff;
+  box-shadow:0 2px 12px rgba(0,0,0,0.18);
+}
+.preview-info{ flex:1; min-width:0; }
+.preview-name{ font-size:15px; font-weight:800; color:#1e3a8a; margin-bottom:3px; }
+.preview-desc{ font-size:12px; color:rgba(30,60,150,0.7); line-height:1.4; }
+.preview-loading{ color:#2563eb; }
+@keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:0.4} }
+.preview-loading{ animation:pulse 1.2s ease-in-out infinite; }
 
-  .app-icon-wrap {
-    width: 62px;
-    height: 62px;
-    border-radius: 18px;
-    background: var(--card);
-    border: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    cursor: pointer;
-    position: relative;
-    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
-    box-shadow: 0 3px 10px var(--shadow);
-  }
+/* 폼 */
+.form-group{ margin-bottom:14px; }
+.form-label{
+  display:block; font-size:11px; font-weight:800; color:rgba(30,60,150,0.6);
+  letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px;
+}
+.form-input, .form-textarea{
+  width:100%;
+  background:rgba(37,99,235,0.05);
+  border:1.5px solid rgba(37,99,235,0.15);
+  border-radius:14px; padding:11px 14px;
+  font-size:15px; font-family:'Nanum Gothic',sans-serif;
+  color:#1e3a8a; outline:none;
+  transition:border-color 0.18s, background 0.18s, box-shadow 0.18s;
+}
+.form-input:focus, .form-textarea:focus{
+  border-color:rgba(37,99,235,0.5);
+  background:#fff;
+  box-shadow:0 0 0 4px rgba(37,99,235,0.1);
+}
+.form-textarea{ resize:none; height:68px; line-height:1.55; }
+.char-row{ display:flex; justify-content:flex-end; margin-top:5px; }
+.char-badge{
+  font-size:11px; font-weight:700; color:rgba(37,99,235,0.7);
+  background:rgba(37,99,235,0.1); border-radius:20px; padding:2px 9px;
+}
 
-  .app-icon-wrap:hover {
-    transform: translateY(-4px) scale(1.06);
-    box-shadow: 0 8px 22px var(--shadow);
-    border-color: var(--pink);
-  }
+/* 버튼 */
+.btn-row{ display:flex; gap:10px; margin-top:6px; }
+.btn-cancel{
+  flex:1; padding:13px; border:1.5px solid rgba(37,99,235,0.2);
+  border-radius:16px; background:transparent;
+  font-size:14px; cursor:pointer; color:rgba(30,60,150,0.7);
+  font-family:'Nanum Gothic',sans-serif; font-weight:700;
+  transition:background 0.15s;
+}
+.btn-cancel:hover{ background:rgba(37,99,235,0.06); }
+.btn-save{
+  flex:2.5; padding:13px; border:none; border-radius:16px;
+  background:linear-gradient(135deg,#2563eb,#06b6d4);
+  font-size:15px; cursor:pointer; color:#fff;
+  font-family:'Nanum Gothic',sans-serif; font-weight:800;
+  box-shadow:0 6px 20px rgba(37,99,235,0.4);
+  transition:transform 0.18s, box-shadow 0.18s;
+}
+.btn-save:hover{ transform:scale(1.03); box-shadow:0 8px 26px rgba(37,99,235,0.5); }
+.btn-save:active{ transform:scale(0.97); }
 
-  .app-icon-wrap:active { transform: scale(0.94); }
-
-  .app-icon-wrap img {
-    width: 38px;
-    height: 38px;
-    object-fit: contain;
-  }
-
-  .fallback-icon-svg {
-    width: 32px;
-    height: 32px;
-    opacity: 0.4;
-  }
-
-  .app-name {
-    font-size: 10.5px;
-    color: var(--text);
-    text-align: center;
-    max-width: 66px;
-    line-height: 1.3;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    word-break: keep-all;
-    font-weight: 700;
-  }
-
-  /* 수정/삭제 버튼 */
-  .app-actions {
-    position: absolute;
-    top: -7px;
-    right: -4px;
-    display: flex;
-    gap: 3px;
-    opacity: 0;
-    transition: opacity 0.18s;
-    z-index: 5;
-  }
-
-  .app-item:hover .app-actions { opacity: 1; }
-
-  .act-btn {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: 2px solid #fff;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    transition: transform 0.15s;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  }
-
-  .act-btn:hover { transform: scale(1.2); }
-  .act-edit { background: var(--yellow); color: #7A5800; }
-  .act-del  { background: #FF8FAB;  color: #7A0030; }
-
-  /* ── 빈 상태 ── */
-  .empty {
-    text-align: center;
-    padding: 3rem 1rem 2rem;
-  }
-
-  .empty-art {
-    font-size: 58px;
-    margin-bottom: 10px;
-    display: block;
-    animation: wobble 3s ease-in-out infinite;
-  }
-
-  @keyframes wobble {
-    0%,100% { transform: rotate(-5deg); }
-    50%      { transform: rotate(5deg); }
-  }
-
-  .empty h3 {
-    font-family: 'Gaegu', cursive;
-    font-size: 20px;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-
-  .empty p {
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
-
-  .empty-btn {
-    margin-top: 18px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: linear-gradient(135deg, var(--pink) 0%, #FF6B9D 100%);
-    color: #fff;
-    border: none;
-    border-radius: 30px;
-    padding: 10px 22px;
-    font-size: 14px;
-    font-family: 'Nanum Gothic', sans-serif;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(255,107,157,0.45);
-    transition: transform 0.18s;
-  }
-
-  .empty-btn:hover { transform: scale(1.05); }
-
-  /* ── 모달 오버레이 ── */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(61,44,53,0.38);
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    z-index: 200;
-    backdrop-filter: blur(3px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.22s;
-  }
-
-  .overlay.open { opacity: 1; pointer-events: all; }
-
-  .modal {
-    background: var(--card);
-    border-radius: 28px 28px 0 0;
-    width: 100%;
-    max-width: 480px;
-    padding: 20px 20px 32px;
-    border-top: 3px solid var(--pink-light);
-    transform: translateY(100%);
-    transition: transform 0.3s cubic-bezier(0.34,1.2,0.64,1);
-  }
-
-  .overlay.open .modal { transform: translateY(0); }
-
-  .modal-drag {
-    width: 40px;
-    height: 4px;
-    background: var(--border);
-    border-radius: 4px;
-    margin: 0 auto 16px;
-  }
-
-  .modal-title {
-    font-family: 'Gaegu', cursive;
-    font-size: 20px;
-    color: var(--text);
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-  }
-
-  .modal label {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text-muted);
-    margin-bottom: 5px;
-    letter-spacing: 0.03em;
-  }
-
-  .modal input,
-  .modal textarea {
-    width: 100%;
-    border: 2px solid var(--border);
-    border-radius: 14px;
-    padding: 10px 13px;
-    font-size: 14px;
-    font-family: 'Nanum Gothic', sans-serif;
-    background: var(--pink-pale);
-    color: var(--text);
-    margin-bottom: 12px;
-    outline: none;
-    transition: border-color 0.18s, background 0.18s;
-  }
-
-  .modal input:focus,
-  .modal textarea:focus {
-    border-color: var(--pink);
-    background: #fff;
-  }
-
-  .modal textarea { resize: none; height: 64px; line-height: 1.5; }
-
-  .char-wrap {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: -8px;
-    margin-bottom: 10px;
-  }
-
-  .char-count {
-    font-size: 11px;
-    color: var(--text-muted);
-    background: var(--pink-light);
-    border-radius: 10px;
-    padding: 2px 8px;
-  }
-
-  /* 미리보기 카드 */
-  .preview-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: linear-gradient(135deg, var(--pink-pale) 0%, var(--lavender-light) 100%);
-    border: 2px dashed var(--pink-light);
-    border-radius: 18px;
-    padding: 12px 14px;
-    margin-bottom: 14px;
-  }
-
-  .preview-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 14px;
-    background: #fff;
-    border: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .preview-icon img { width: 34px; height: 34px; object-fit: contain; }
-
-  .preview-info { flex: 1; min-width: 0; }
-
-  .preview-name {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 3px;
-  }
-
-  .preview-desc {
-    font-size: 12px;
-    color: var(--text-muted);
-    line-height: 1.4;
-  }
-
-  .preview-loading {
-    color: var(--pink);
-    font-style: italic;
-  }
-
-  .loading-dots::after {
-    content: '●●●';
-    animation: ldots 1.2s steps(3) infinite;
-    letter-spacing: 2px;
-    font-size: 8px;
-    vertical-align: middle;
-  }
-
-  @keyframes ldots {
-    0%  { content: '●○○'; }
-    33% { content: '○●○'; }
-    66% { content: '○○●'; }
-  }
-
-  /* 버튼 */
-  .btn-row {
-    display: flex;
-    gap: 10px;
-    margin-top: 4px;
-  }
-
-  .btn-cancel {
-    flex: 1;
-    padding: 12px;
-    border: 2px solid var(--border);
-    border-radius: 16px;
-    background: transparent;
-    font-size: 14px;
-    cursor: pointer;
-    color: var(--text-muted);
-    font-family: 'Nanum Gothic', sans-serif;
-    font-weight: 700;
-    transition: background 0.15s;
-  }
-
-  .btn-cancel:hover { background: var(--pink-pale); }
-
-  .btn-save {
-    flex: 2;
-    padding: 12px;
-    border: none;
-    border-radius: 16px;
-    background: linear-gradient(135deg, var(--pink) 0%, #FF6B9D 100%);
-    font-size: 14px;
-    cursor: pointer;
-    color: #fff;
-    font-family: 'Nanum Gothic', sans-serif;
-    font-weight: 700;
-    box-shadow: 0 4px 14px rgba(255,107,157,0.4);
-    transition: transform 0.18s;
-  }
-
-  .btn-save:hover { transform: scale(1.03); }
-  .btn-save:active { transform: scale(0.97); }
-
-  /* ── 스크롤바 ── */
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-thumb { background: var(--pink-light); border-radius: 10px; }
-
-  /* 작은 꽃 데코 */
-  .deco {
-    position: fixed;
-    pointer-events: none;
-    font-size: 18px;
-    opacity: 0.18;
-    z-index: 0;
-  }
-  .deco-1 { top: 80px;  left: 10px; animation: spin 12s linear infinite; }
-  .deco-2 { top: 200px; right: 8px; animation: spin 8s linear infinite reverse; font-size: 14px; }
-  .deco-3 { bottom: 120px; left: 14px; animation: spin 15s linear infinite; font-size: 12px; }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* 스크롤 */
+::-webkit-scrollbar{ width:4px; }
+::-webkit-scrollbar-thumb{ background:rgba(37,99,235,0.3); border-radius:8px; }
 </style>
 </head>
 <body>
 
-<span class="deco deco-1">🌸</span>
-<span class="deco deco-2">⭐</span>
-<span class="deco deco-3">🌼</span>
-
 <!-- 헤더 -->
 <div class="header">
   <div class="header-left">
-    <span class="header-emoji">💊</span>
-    <div class="header-texts">
-      <h1>센온 어플모음</h1>
-      <span id="app-count">앱 0개</span>
-    </div>
+    <div class="header-eyebrow">센트럴온누리약국</div>
+    <div class="header-title">앱 모음 💊</div>
+    <div class="header-count" id="app-count">앱 0개</div>
   </div>
-  <button class="add-btn" onclick="openAdd()" aria-label="앱 추가">＋</button>
+  <button class="add-btn" onclick="openAdd()" aria-label="앱 추가">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
 </div>
 
 <!-- 메인 -->
 <div class="main">
   <div id="grid-wrap" style="display:none">
-    <div class="cat-label">🗂️ 내 앱 목록</div>
+    <div class="section-title">내 앱</div>
     <div class="grid" id="app-grid"></div>
   </div>
 
-  <!-- 빈 상태 -->
   <div class="empty" id="empty-state">
-    <span class="empty-art">🐾</span>
-    <h3>아직 앱이 없어요!</h3>
-    <p>자주 쓰는 웹앱 주소를 추가하면<br>여기에 모여요 🌸</p>
-    <button class="empty-btn" onclick="openAdd()">＋ 첫 번째 앱 추가</button>
+    <div class="empty-card">
+      <div class="empty-icon">🌸</div>
+      <h3>아직 앱이 없어요</h3>
+      <p>자주 쓰는 웹앱 주소를 추가하면<br>여기 모여요!</p>
+      <button class="empty-btn" onclick="openAdd()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        첫 번째 앱 추가
+      </button>
+    </div>
   </div>
 </div>
 
 <!-- 모달 -->
 <div class="overlay" id="modal-overlay" onclick="overlayClick(event)">
-  <div class="modal" id="modal-box">
-    <div class="modal-drag"></div>
+  <div class="modal">
+    <div class="modal-handle"></div>
     <div class="modal-title">
       <span id="modal-emoji">✨</span>
       <span id="modal-title-text">새 앱 추가</span>
     </div>
 
-    <label>앱 주소 (URL)</label>
-    <input type="url" id="input-url" placeholder="https://" oninput="onUrlInput(this.value)">
+    <div class="form-group">
+      <label class="form-label">앱 주소 URL</label>
+      <input class="form-input" type="url" id="input-url" placeholder="https://" oninput="onUrlInput(this.value)">
+    </div>
 
-    <!-- 미리보기 -->
     <div class="preview-card" id="preview-area" style="display:none">
-      <div class="preview-icon" id="preview-icon-wrap">
-        <svg class="fallback-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+      <div id="preview-icon-wrap" class="preview-icon-wrap">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>
       </div>
       <div class="preview-info">
         <div class="preview-name" id="preview-name">—</div>
-        <div class="preview-desc preview-loading loading-dots" id="preview-desc"> AI 설명 생성 중</div>
+        <div class="preview-desc preview-loading" id="preview-desc">AI가 읽어오는 중...</div>
       </div>
     </div>
 
-    <label>앱 이름</label>
-    <input type="text" id="input-name" placeholder="앱 이름 (12자 이내)" maxlength="12">
+    <div class="form-group">
+      <label class="form-label">앱 이름</label>
+      <input class="form-input" type="text" id="input-name" placeholder="앱 이름 (10자 이내)" maxlength="10">
+    </div>
 
-    <label>짧은 설명</label>
-    <textarea id="input-desc" placeholder="20자 이내로 설명해 주세요" maxlength="20" oninput="updateChar()"></textarea>
-    <div class="char-wrap">
-      <span class="char-count"><span id="char-count">0</span>/20</span>
+    <div class="form-group">
+      <label class="form-label">짧은 설명</label>
+      <textarea class="form-textarea" id="input-desc" placeholder="20자 이내" maxlength="20" oninput="updateChar()"></textarea>
+      <div class="char-row">
+        <span class="char-badge"><span id="char-count">0</span>/20</span>
+      </div>
     </div>
 
     <div class="btn-row">
       <button class="btn-cancel" onclick="closeModal()">취소</button>
-      <button class="btn-save" onclick="saveApp()">💾 저장</button>
+      <button class="btn-save" onclick="saveApp()">저장하기</button>
     </div>
   </div>
 </div>
 
 <script>
-let apps = [];
-let editingId = null;
-let urlTimer = null;
-let pendingIcon = '';
+const GEMINI_KEY = 'AQ.Ab8RN6LHG6mUEABmeYcmR-VGfm_vqUcv4b30BmrYqJ_V_Tadxw';
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
-/* ─ 저장/로드 ─ */
-function loadApps() {
-  try { apps = JSON.parse(localStorage.getItem('cenon-apps') || '[]'); } catch(e) { apps = []; }
-  render();
+const LETTER_COLORS = [
+  'linear-gradient(135deg,#2563eb,#06b6d4)',
+  'linear-gradient(135deg,#0ea5e9,#38bdf8)',
+  'linear-gradient(135deg,#1d4ed8,#3b82f6)',
+  'linear-gradient(135deg,#0891b2,#22d3ee)',
+  'linear-gradient(135deg,#1e40af,#60a5fa)',
+  'linear-gradient(135deg,#0284c7,#7dd3fc)',
+  'linear-gradient(135deg,#0369a1,#38bdf8)',
+  'linear-gradient(135deg,#1d4ed8,#06b6d4)',
+  'linear-gradient(135deg,#3b82f6,#a5f3fc)',
+  'linear-gradient(135deg,#2563eb,#93c5fd)',
+];
+
+let apps=[], editingId=null, urlTimer=null;
+let pendingIcon='', pendingLetterColor='', pendingLetter='';
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function getDomain(url){ try{ return new URL(url).hostname; }catch(e){ return url; } }
+function letterColor(name){ return LETTER_COLORS[(name||'?').charCodeAt(0) % LETTER_COLORS.length]; }
+
+/* 파비콘 */
+function probeImage(src){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>resolve(src); img.onerror=()=>resolve(null);
+    img.src=src; setTimeout(()=>resolve(null),2500);
+  });
+}
+async function resolveFavicon(url){
+  try{
+    const {hostname,origin}=new URL(url);
+    const c=[
+      `https://www.google.com/s2/favicons?sz=64&domain=${hostname}`,
+      `https://icons.duckduckgo.com/ip3/${hostname}.ico`,
+      `${origin}/favicon.ico`,`${origin}/favicon.png`
+    ];
+    for(const s of c){ const r=await probeImage(s); if(r) return r; }
+  }catch(e){}
+  return '';
 }
 
-function saveApps() {
-  localStorage.setItem('cenon-apps', JSON.stringify(apps));
-}
-
-/* ─ 렌더 ─ */
-function render() {
-  const grid = document.getElementById('app-grid');
-  const empty = document.getElementById('empty-state');
-  const gridWrap = document.getElementById('grid-wrap');
-  document.getElementById('app-count').textContent = `앱 ${apps.length}개`;
-
-  if (apps.length === 0) {
-    gridWrap.style.display = 'none';
-    empty.style.display = 'block';
-    return;
+/* 아이콘 HTML */
+function iconHtml(a){
+  if(a.icon){
+    return `<div class="app-icon-wrap" onclick="openApp('${esc(a.url)}')">
+      <img src="${esc(a.icon)}" alt="" onerror="this.parentElement.outerHTML=letterIconHtml('${esc(a.name)}','${esc(a.url)}','${esc(a.letterColor||'')}')">
+    </div>`;
   }
+  return letterIconHtml(a.name, a.url, a.letterColor||'');
+}
+function letterIconHtml(name,url,color){
+  const bg = color||letterColor(name);
+  const letter=(name||'?')[0].toUpperCase();
+  return `<div class="letter-icon" style="background:${bg}" onclick="openApp('${esc(url)}')">${letter}</div>`;
+}
 
-  empty.style.display = 'none';
-  gridWrap.style.display = 'block';
+/* 렌더 */
+function loadApps(){ try{ apps=JSON.parse(localStorage.getItem('cenon-apps')||'[]'); }catch(e){ apps=[]; } render(); }
+function saveApps(){ localStorage.setItem('cenon-apps',JSON.stringify(apps)); }
 
-  grid.innerHTML = apps.map(a => `
-    <div class="app-item">
+function render(){
+  const grid=document.getElementById('app-grid');
+  const empty=document.getElementById('empty-state');
+  const gw=document.getElementById('grid-wrap');
+  document.getElementById('app-count').textContent=`앱 ${apps.length}개`;
+  if(!apps.length){ gw.style.display='none'; empty.style.display='block'; return; }
+  empty.style.display='none'; gw.style.display='block';
+  grid.innerHTML=apps.map((a,i)=>`
+    <div class="app-item" style="animation-delay:${i*40}ms">
       <div class="app-actions">
-        <button class="act-btn act-edit" onclick="openEdit('${a.id}')" title="수정">✏️</button>
-        <button class="act-btn act-del" onclick="deleteApp('${a.id}')" title="삭제">🗑️</button>
+        <button class="act-btn act-edit" onclick="openEdit('${a.id}')">✏️</button>
+        <button class="act-btn act-del" onclick="deleteApp('${a.id}')">🗑️</button>
       </div>
-      <div class="app-icon-wrap" onclick="openApp('${esc(a.url)}')">
-        ${a.icon
-          ? `<img src="${esc(a.icon)}" alt="${esc(a.name)}" onerror="this.replaceWith(makeFallback())">`
-          : `<svg class="fallback-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>`
-        }
-      </div>
+      ${iconHtml(a)}
       <div class="app-name">${esc(a.name)}</div>
     </div>
   `).join('');
 }
+function openApp(url){ window.open(url,'_blank'); }
 
-function makeFallback() {
-  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-  svg.setAttribute('viewBox','0 0 24 24');
-  svg.setAttribute('class','fallback-icon-svg');
-  svg.setAttribute('fill','none');
-  svg.setAttribute('stroke','#ccc');
-  svg.setAttribute('stroke-width','1.5');
-  svg.innerHTML = '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>';
-  return svg;
+/* 모달 */
+function resetModal(){
+  pendingIcon=''; pendingLetter=''; pendingLetterColor='';
+  document.getElementById('input-url').value='';
+  document.getElementById('input-name').value='';
+  document.getElementById('input-desc').value='';
+  document.getElementById('char-count').textContent='0';
+  document.getElementById('preview-area').style.display='none';
 }
-
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-
-function openApp(url) { window.open(url, '_blank'); }
-
-/* ─ 모달 ─ */
-function openAdd() {
-  editingId = null;
-  pendingIcon = '';
-  document.getElementById('modal-emoji').textContent = '✨';
-  document.getElementById('modal-title-text').textContent = '새 앱 추가';
-  document.getElementById('input-url').value = '';
-  document.getElementById('input-name').value = '';
-  document.getElementById('input-desc').value = '';
-  document.getElementById('char-count').textContent = '0';
-  document.getElementById('preview-area').style.display = 'none';
+function openAdd(){
+  editingId=null; resetModal();
+  document.getElementById('modal-emoji').textContent='✨';
+  document.getElementById('modal-title-text').textContent='새 앱 추가';
   document.getElementById('modal-overlay').classList.add('open');
 }
-
-function openEdit(id) {
-  const a = apps.find(x => x.id === id);
-  if (!a) return;
-  editingId = id;
-  pendingIcon = a.icon || '';
-  document.getElementById('modal-emoji').textContent = '🖊️';
-  document.getElementById('modal-title-text').textContent = '앱 수정';
-  document.getElementById('input-url').value = a.url;
-  document.getElementById('input-name').value = a.name;
-  document.getElementById('input-desc').value = a.desc || '';
-  document.getElementById('char-count').textContent = (a.desc || '').length;
-  showPreview(a.name, a.desc || '', a.icon || '');
+function openEdit(id){
+  const a=apps.find(x=>x.id===id); if(!a) return;
+  editingId=id; resetModal();
+  pendingIcon=a.icon||''; pendingLetterColor=a.letterColor||letterColor(a.name); pendingLetter=(a.name||'?')[0].toUpperCase();
+  document.getElementById('modal-emoji').textContent='✏️';
+  document.getElementById('modal-title-text').textContent='앱 수정';
+  document.getElementById('input-url').value=a.url;
+  document.getElementById('input-name').value=a.name;
+  document.getElementById('input-desc').value=a.desc||'';
+  document.getElementById('char-count').textContent=(a.desc||'').length;
+  applyPreview(a.name, a.desc||'', a.icon||'', a.letterColor||letterColor(a.name));
   document.getElementById('modal-overlay').classList.add('open');
 }
-
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); }
+function overlayClick(e){ if(e.target===document.getElementById('modal-overlay')) closeModal(); }
+function updateChar(){
+  const v=document.getElementById('input-desc').value;
+  document.getElementById('char-count').textContent=v.length;
+  document.getElementById('preview-desc').textContent=v||'설명 없음';
+  document.getElementById('preview-desc').className='preview-desc';
 }
 
-function overlayClick(e) {
-  if (e.target === document.getElementById('modal-overlay')) closeModal();
+function applyPreview(name,desc,icon,lColor){
+  document.getElementById('preview-area').style.display='flex';
+  document.getElementById('preview-name').textContent=name;
+  document.getElementById('preview-desc').textContent=desc||'—';
+  document.getElementById('preview-desc').className='preview-desc';
+  const wrap=document.getElementById('preview-icon-wrap');
+  if(icon){
+    wrap.className='preview-icon-wrap';
+    wrap.style.background=''; wrap.textContent='';
+    wrap.innerHTML=`<img src="${esc(icon)}" alt="" style="width:34px;height:34px;object-fit:contain">`;
+  } else {
+    const color=lColor||letterColor(name);
+    wrap.className='preview-letter-wrap';
+    wrap.style.background=color;
+    wrap.textContent=(name||'?')[0].toUpperCase();
+  }
 }
 
-function updateChar() {
-  const v = document.getElementById('input-desc').value;
-  document.getElementById('char-count').textContent = v.length;
-  document.getElementById('preview-desc').textContent = v || '설명 없음';
-  document.getElementById('preview-desc').className = 'preview-desc';
-}
-
-/* ─ URL 입력 핸들러 ─ */
-function onUrlInput(val) {
+/* URL 입력 */
+function onUrlInput(val){
   clearTimeout(urlTimer);
-  if (!val.trim()) { document.getElementById('preview-area').style.display = 'none'; return; }
-  urlTimer = setTimeout(() => fetchMeta(val.trim()), 700);
+  if(!val.trim()){ document.getElementById('preview-area').style.display='none'; return; }
+  urlTimer=setTimeout(()=>fetchMeta(val.trim()),700);
 }
 
-function getDomain(url) {
-  try { return new URL(url).hostname; } catch(e) { return url; }
-}
+async function fetchMeta(url){
+  if(!/^https?:\/\//.test(url)) url='https://'+url;
+  document.getElementById('input-url').value=url;
+  const domain=getDomain(url);
+  const autoName=domain.replace('www.','').split('.')[0];
+  const nameEl=document.getElementById('input-name');
 
-function getFavicon(url) {
-  try {
-    const host = new URL(url).hostname;
-    return `https://www.google.com/s2/favicons?sz=64&domain=${host}`;
-  } catch(e) { return ''; }
-}
+  const color=letterColor(autoName);
+  pendingIcon=''; pendingLetter=autoName[0].toUpperCase(); pendingLetterColor=color;
 
-function showPreview(name, desc, icon) {
-  document.getElementById('preview-area').style.display = 'flex';
-  document.getElementById('preview-name').textContent = name;
-  document.getElementById('preview-desc').textContent = desc || '—';
-  document.getElementById('preview-desc').className = 'preview-desc';
-  const wrap = document.getElementById('preview-icon-wrap');
-  wrap.innerHTML = icon
-    ? `<img src="${esc(icon)}" alt="" style="width:34px;height:34px;object-fit:contain">`
-    : `<svg class="fallback-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>`;
-}
+  // 로딩 상태
+  document.getElementById('preview-area').style.display='flex';
+  document.getElementById('preview-name').textContent=autoName;
+  document.getElementById('preview-desc').className='preview-desc preview-loading';
+  document.getElementById('preview-desc').textContent='AI가 읽어오는 중...';
+  const wrap=document.getElementById('preview-icon-wrap');
+  wrap.className='preview-letter-wrap';
+  wrap.style.background=color;
+  wrap.textContent=pendingLetter;
 
-async function fetchMeta(url) {
-  if (!/^https?:\/\//.test(url)) url = 'https://' + url;
-  document.getElementById('input-url').value = url;
+  if(!nameEl.value) nameEl.value=autoName;
 
-  const domain = getDomain(url);
-  const favicon = getFavicon(url);
-  pendingIcon = favicon;
+  // 파비콘 + Gemini 병렬
+  const [faviconUrl, aiResult] = await Promise.all([
+    resolveFavicon(url),
+    callGemini(url, domain)
+  ]);
 
-  document.getElementById('preview-area').style.display = 'flex';
-  document.getElementById('preview-name').textContent = domain.replace('www.','');
-  document.getElementById('preview-desc').className = 'preview-desc preview-loading loading-dots';
-  document.getElementById('preview-desc').textContent = ' AI 설명 생성 중';
-
-  const wrap = document.getElementById('preview-icon-wrap');
-  wrap.innerHTML = favicon ? `<img src="${esc(favicon)}" alt="" style="width:34px;height:34px;object-fit:contain">` : '';
-
-  const nameEl = document.getElementById('input-name');
-  if (!nameEl.value) {
-    nameEl.value = domain.replace('www.','').split('.')[0];
+  // 파비콘
+  if(faviconUrl){
+    pendingIcon=faviconUrl;
+    wrap.className='preview-icon-wrap';
+    wrap.style.background=''; wrap.textContent='';
+    wrap.innerHTML=`<img src="${esc(faviconUrl)}" alt="" style="width:34px;height:34px;object-fit:contain">`;
   }
 
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 60,
-        messages: [{
-          role: 'user',
-          content: `웹사이트 URL: ${url}\n도메인: ${domain}\n\n이 웹사이트 서비스를 한국어로 20자 이내의 짧고 귀여운 한 줄 설명으로 써줘. 이모지 없이, 설명 텍스트만 출력.`
-        }]
+  // AI 이름+설명
+  const aiName=aiResult.name||'';
+  const aiDesc=aiResult.desc||'';
+  if(aiName && (!nameEl.value || nameEl.value===autoName)){
+    nameEl.value=aiName;
+    pendingLetter=aiName[0].toUpperCase();
+    pendingLetterColor=letterColor(aiName);
+    document.getElementById('preview-name').textContent=aiName;
+    if(!pendingIcon){
+      wrap.className='preview-letter-wrap';
+      wrap.style.background=pendingLetterColor;
+      wrap.textContent=pendingLetter;
+    }
+  }
+  document.getElementById('input-desc').value=aiDesc;
+  document.getElementById('char-count').textContent=aiDesc.length;
+  document.getElementById('preview-desc').className='preview-desc';
+  document.getElementById('preview-desc').textContent=aiDesc||'설명을 직접 입력해 주세요';
+}
+
+async function callGemini(url, domain){
+  try{
+    const res=await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        contents:[{parts:[{text:`웹사이트 URL: ${url}\n도메인: ${domain}\n\n아래 JSON 형식으로만 답해줘. 다른 말은 절대 하지 마.\n{\n  "name": "앱/서비스 실제 이름 (한국어 또는 영문, 10자 이내, 이모지 없이)",\n  "desc": "한 줄 설명 (한국어, 20자 이내, 이모지 없이)"\n}`}]}],
+        generationConfig:{maxOutputTokens:100, temperature:0.3}
       })
     });
-    const data = await res.json();
-    const desc = (data.content?.[0]?.text || '').trim().slice(0, 20);
-    document.getElementById('input-desc').value = desc;
-    document.getElementById('char-count').textContent = desc.length;
-    document.getElementById('preview-desc').className = 'preview-desc';
-    document.getElementById('preview-desc').textContent = desc || '설명 없음';
-  } catch(e) {
-    document.getElementById('preview-desc').className = 'preview-desc';
-    document.getElementById('preview-desc').textContent = '설명을 가져오지 못했어요';
-  }
+    const data=await res.json();
+    const raw=(data?.candidates?.[0]?.content?.parts?.[0]?.text||'').trim();
+    const json=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    return{
+      name:(json.name||'').replace(/["'「『」』]/g,'').slice(0,10),
+      desc:(json.desc||'').replace(/["'「『」』]/g,'').slice(0,20)
+    };
+  }catch(e){ return{name:'',desc:''}; }
 }
 
-/* ─ 저장/삭제 ─ */
-function saveApp() {
-  const url  = document.getElementById('input-url').value.trim();
-  const name = document.getElementById('input-name').value.trim();
-  const desc = document.getElementById('input-desc').value.trim();
-
-  if (!url || !name) {
-    alert('🌸 URL과 이름을 입력해 주세요!');
-    return;
-  }
-
-  if (editingId) {
-    const idx = apps.findIndex(a => a.id === editingId);
-    if (idx >= 0) apps[idx] = { ...apps[idx], url, name, desc, icon: pendingIcon };
+/* 저장/삭제 */
+function saveApp(){
+  const url=document.getElementById('input-url').value.trim();
+  const name=document.getElementById('input-name').value.trim();
+  const desc=document.getElementById('input-desc').value.trim();
+  if(!url||!name){ alert('URL과 이름을 입력해 주세요 🌸'); return; }
+  const entry={url,name,desc,icon:pendingIcon,letterColor:pendingLetterColor||letterColor(name)};
+  if(editingId){
+    const i=apps.findIndex(a=>a.id===editingId);
+    if(i>=0) apps[i]={...apps[i],...entry};
   } else {
-    apps.push({ id: Date.now().toString(), url, name, desc, icon: pendingIcon });
+    apps.push({id:Date.now().toString(),...entry});
   }
-
-  saveApps();
-  render();
-  closeModal();
+  saveApps(); render(); closeModal();
+}
+function deleteApp(id){
+  if(!confirm('이 앱을 삭제할까요?')) return;
+  apps=apps.filter(a=>a.id!==id); saveApps(); render();
 }
 
-function deleteApp(id) {
-  if (!confirm('이 앱을 삭제할까요? 🗑️')) return;
-  apps = apps.filter(a => a.id !== id);
-  saveApps();
-  render();
-}
-
-/* ─ 시작 ─ */
 loadApps();
 </script>
 </body>
