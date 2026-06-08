@@ -44,21 +44,7 @@ body{
 .app-item{display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;animation:popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both}
 @keyframes popIn{from{transform:scale(0.5) translateY(8px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
 
-/* 아이콘 */
-.app-icon-wrap{
-  width:64px;height:64px;border-radius:20px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;overflow:hidden;flex-shrink:0;
-  box-shadow:0 4px 14px rgba(180,83,9,0.18);
-  border:2px solid rgba(255,255,255,0.8);
-  background:#fff;
-  transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.2s;
-}
-.app-icon-wrap img{width:40px;height:40px;object-fit:contain}
-.app-icon-wrap:hover{transform:translateY(-5px) scale(1.08);box-shadow:0 10px 24px rgba(180,83,9,0.25)}
-.app-icon-wrap:active{transform:scale(0.92)}
-
-/* 꽃 아이콘 */
+/* 꽃 아이콘 공통 */
 .flower-icon{
   width:64px;height:64px;border-radius:20px;
   display:flex;align-items:center;justify-content:center;
@@ -101,8 +87,8 @@ body{
 /* 미리보기 */
 .preview-card{display:flex;align-items:center;gap:14px;background:rgba(245,158,11,0.07);border:1.5px solid rgba(245,158,11,0.25);border-radius:20px;padding:12px 14px;margin-bottom:16px}
 .preview-icon-box{width:52px;height:52px;border-radius:16px;background:#fff;border:1.5px solid rgba(245,158,11,0.2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;box-shadow:0 2px 10px rgba(180,83,9,0.1)}
-.preview-icon-box img{width:34px;height:34px;object-fit:contain}
-.preview-flower-box{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(255,255,255,0.6)}
+.preview-icon-box svg{width:24px;height:24px}
+.preview-flower-box{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid rgba(255,255,255,0.6);transition: background 0.2s;}
 .preview-flower-box svg{width:34px;height:34px}
 .preview-info{flex:1;min-width:0}
 .preview-name{font-size:14px;font-weight:800;color:#78350f;margin-bottom:3px}
@@ -162,6 +148,7 @@ body{
   </div>
 </div>
 
+<!-- 앱 추가/수정 모달 -->
 <div class="overlay" id="modal-overlay" onclick="overlayClick(event)">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -184,7 +171,7 @@ body{
 
     <div class="form-group">
       <label class="form-label">앱 이름</label>
-      <input class="form-input" type="text" id="input-name" placeholder="앱 이름 (10자 이내)" maxlength="10">
+      <input class="form-input" type="text" id="input-name" placeholder="앱 이름 (10자 이내)" maxlength="10" oninput="onNameInput(this.value)">
     </div>
     <div class="form-group">
       <label class="form-label">짧은 설명</label>
@@ -198,9 +185,29 @@ body{
   </div>
 </div>
 
+<!-- 커스텀 알림/확인 대화상자 오버레이 -->
+<div class="overlay" id="custom-dialog-overlay" onclick="closeCustomDialogOverlay(event)" style="z-index: 300;">
+  <div class="modal" style="max-width: 380px; padding: 24px; border-radius: 28px; text-align: center; margin: auto; border: 2px solid rgba(245, 158, 11, 0.35);">
+    <div id="dialog-icon" style="font-size: 40px; margin-bottom: 12px;">🌸</div>
+    <h3 id="dialog-title" style="font-family:'Nanum Myeongjo',serif; font-size: 20px; color: #78350f; margin-bottom: 8px;">안내</h3>
+    <p id="dialog-message" style="font-size: 14px; color: rgba(120,53,15,0.8); line-height: 1.6; margin-bottom: 20px; word-break: keep-all;"></p>
+    <div style="display: flex; gap: 10px; justify-content: center;" id="dialog-buttons">
+      <button class="btn-cancel" id="dialog-btn-cancel" style="display:none; padding: 12px; border-radius: 14px; flex: 1;" onclick="handleDialogAction(false)">취소</button>
+      <button class="btn-save" id="dialog-btn-confirm" style="padding: 12px; border-radius: 14px; flex: 1.5; background:#f59e0b; color: white;" onclick="handleDialogAction(true)">확인</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const GEMINI_KEY = 'AQ.Ab8RN6LHG6mUEABmeYcmR-VGfm_vqUcv4b30BmrYqJ_V_Tadxw';
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+
+// 모델 호출 우선순위 리스트 (1순위부터 차례대로 탐색)
+const MODEL_PRIORITY = [
+  'gemini-3.1-flash-lite',
+  'gemini-3.5-flash',
+  'gemini-3-flash',
+  'gemini-2.5-flash'
+];
 
 /* ── 꽃 SVG 모음 (8종 랜덤) ── */
 const FLOWERS = [
@@ -256,7 +263,7 @@ const FLOWERS = [
   // 8. 수국
   (c)=>`<svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
     <g transform="translate(22,22)">
-      ${[-8,-8,8,8,-8,8].map((x,i)=>{const y=[−8,8,−8,8,0,0][i];return`<circle r="7" cx="${x}" cy="${[−8,8,−8,8,0,0][i]??0}" fill="${c}" opacity="0.78"/>`;}).join('')}
+      ${[-8,-8,8,8,-8,8].map((x,i)=>{const y=[-8,8,-8,8,0,0][i];return`<circle r="7" cx="${x}" cy="${y}" fill="${c}" opacity="0.78"/>`;}).join('')}
       ${[[-8,-8],[8,-8],[-8,8],[8,8],[-10,0],[10,0],[0,-10],[0,10]].map(([x,y])=>`<circle r="5" cx="${x}" cy="${y}" fill="${c}" opacity="0.72"/>`).join('')}
       <circle r="4" fill="#fff" opacity="0.6"/>
     </g></svg>`,
@@ -274,33 +281,21 @@ function randomFlower(name) {
   return { svgFn: FLOWERS[fi], bg: FLOWER_BG[bi], idx: fi };
 }
 
-function flowerSvgStr(name, colorOverride) {
-  const {svgFn, bg} = randomFlower(name);
-  const petalColor = colorOverride || '#fff';
-  return svgFn(petalColor);
-}
-
 /* ── 아이콘 HTML ── */
 function iconHtml(a) {
-  if (a.icon) {
-    return `<div class="app-icon-wrap" onclick="openApp('${esc(a.url)}')">
-      <img src="${esc(a.icon)}" alt="" onerror="this.closest('.app-icon-wrap').outerHTML=flowerIconHtml('${esc(a.name)}','${esc(a.url)}')">
-    </div>`;
-  }
+  // 사용자의 요구사항: 앱 종류와 무관하게 항상 무작위(매칭된) 꽃 모양 아이콘으로 단일화합니다.
   return flowerIconHtml(a.name, a.url);
 }
 
 function flowerIconHtml(name, url) {
   const {svgFn, bg} = randomFlower(name);
-  const petalColors = ['#fff','rgba(255,255,255,0.9)','rgba(255,255,255,0.85)'];
-  const pc = petalColors[0];
-  const svg = svgFn(pc).replace(/\n\s*/g,' ');
+  const svg = svgFn('#fff').replace(/\n\s*/g, ' ');
   return `<div class="flower-icon" style="background:${bg};box-shadow:0 4px 14px rgba(0,0,0,0.15)" onclick="openApp('${esc(url)}')">${svg}</div>`;
 }
 
 function flowerIconHtmlPreview(name) {
   const {svgFn, bg} = randomFlower(name);
-  const svg = svgFn('#fff').replace(/\n\s*/g,' ');
+  const svg = svgFn('#fff').replace(/\n\s*/g, ' ');
   return `<div class="preview-flower-box" style="background:${bg}">${svg}</div>`;
 }
 
@@ -308,32 +303,70 @@ function flowerIconHtmlPreview(name) {
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function getDomain(url){try{return new URL(url).hostname}catch(e){return url}}
 
-/* ── 파비콘 프로브 ── */
-function probeImage(src){
-  return new Promise(resolve=>{
-    const img=new Image();
-    img.onload=()=>resolve(src);img.onerror=()=>resolve(null);
-    img.src=src;setTimeout(()=>resolve(null),2500);
+/* ── 커스텀 알림/대화창 ── */
+let dialogResolve = null;
+
+function showCustomAlert(message, emoji = '🌸', title = '안내') {
+  document.getElementById('dialog-icon').textContent = emoji;
+  document.getElementById('dialog-title').textContent = title;
+  document.getElementById('dialog-message').textContent = message;
+  document.getElementById('dialog-btn-cancel').style.display = 'none';
+  document.getElementById('dialog-btn-confirm').textContent = '확인';
+  
+  document.getElementById('custom-dialog-overlay').classList.add('open');
+  
+  return new Promise(resolve => {
+    dialogResolve = resolve;
   });
 }
-async function resolveFavicon(url){
-  try{
-    const {hostname,origin}=new URL(url);
-    const c=[
-      `https://www.google.com/s2/favicons?sz=64&domain=${hostname}`,
-      `https://icons.duckduckgo.com/ip3/${hostname}.ico`,
-      `${origin}/favicon.ico`,`${origin}/favicon.png`
-    ];
-    for(const s of c){const r=await probeImage(s);if(r)return r;}
-  }catch(e){}
-  return '';
+
+function showCustomConfirm(message, emoji = '🗑️', title = '확인') {
+  document.getElementById('dialog-icon').textContent = emoji;
+  document.getElementById('dialog-title').textContent = title;
+  document.getElementById('dialog-message').textContent = message;
+  document.getElementById('dialog-btn-cancel').style.display = 'block';
+  document.getElementById('dialog-btn-confirm').textContent = '삭제';
+  
+  document.getElementById('custom-dialog-overlay').classList.add('open');
+  
+  return new Promise(resolve => {
+    dialogResolve = resolve;
+  });
 }
 
-/* ── 렌더 ── */
-let apps=[],editingId=null,urlTimer=null,pendingIcon='';
+function handleDialogAction(status) {
+  document.getElementById('custom-dialog-overlay').classList.remove('open');
+  if (dialogResolve) {
+    dialogResolve(status);
+    dialogResolve = null;
+  }
+}
 
-function loadApps(){try{apps=JSON.parse(localStorage.getItem('cenon-apps')||'[]')}catch(e){apps=[]}render()}
-function saveApps(){localStorage.setItem('cenon-apps',JSON.stringify(apps))}
+function closeCustomDialogOverlay(e) {
+  if (e.target === document.getElementById('custom-dialog-overlay')) {
+    handleDialogAction(false);
+  }
+}
+
+/* ── 데이터 렌더링 ── */
+let apps=[],editingId=null,urlTimer=null;
+
+function loadApps(){
+  try{
+    apps=JSON.parse(localStorage.getItem('cenon-apps')||'[]');
+  }catch(e){
+    apps=[];
+  }
+  render();
+}
+
+function saveApps(){
+  try {
+    localStorage.setItem('cenon-apps',JSON.stringify(apps));
+  } catch(e) {
+    console.error("Local storage error:", e);
+  }
+}
 
 function render(){
   const grid=document.getElementById('app-grid');
@@ -356,8 +389,7 @@ function render(){
 function openApp(url){window.open(url,'_blank')}
 
 /* ── 모달 ── */
-function resetModal(){
-  pendingIcon='';
+function resetModal() {
   document.getElementById('input-url').value='';
   document.getElementById('input-name').value='';
   document.getElementById('input-desc').value='';
@@ -373,18 +405,18 @@ function openAdd(){
 function openEdit(id){
   const a=apps.find(x=>x.id===id);if(!a)return;
   editingId=id;resetModal();
-  pendingIcon=a.icon||'';
   document.getElementById('modal-emoji').textContent='✏️';
   document.getElementById('modal-title-text').textContent='앱 수정';
   document.getElementById('input-url').value=a.url;
   document.getElementById('input-name').value=a.name;
   document.getElementById('input-desc').value=a.desc||'';
   document.getElementById('char-count').textContent=(a.desc||'').length;
-  setPreview(a.name,a.desc||'',a.icon||'');
+  setPreview(a.name,a.desc||'');
   document.getElementById('modal-overlay').classList.add('open');
 }
 function closeModal(){document.getElementById('modal-overlay').classList.remove('open')}
 function overlayClick(e){if(e.target===document.getElementById('modal-overlay'))closeModal()}
+
 function updateChar(){
   const v=document.getElementById('input-desc').value;
   document.getElementById('char-count').textContent=v.length;
@@ -392,28 +424,33 @@ function updateChar(){
   document.getElementById('preview-desc').className='preview-desc';
 }
 
-function setPreview(name,desc,icon){
-  document.getElementById('preview-area').style.display='flex';
-  document.getElementById('preview-name').textContent=name||'—';
-  document.getElementById('preview-desc').textContent=desc||'—';
-  document.getElementById('preview-desc').className='preview-desc';
-  const wrap=document.getElementById('preview-icon-wrap');
-  if(icon){
-    wrap.className='preview-icon-box';
-    wrap.style.background='';
-    wrap.innerHTML=`<img src="${esc(icon)}" alt="" style="width:34px;height:34px;object-fit:contain">`;
-  } else if(name){
-    wrap.outerHTML = flowerIconHtmlPreview(name).replace('id="preview-icon-wrap"','') ;
-    // preview-icon-wrap 교체
-    const pa=document.getElementById('preview-area');
-    const old=pa.querySelector('.preview-icon-box,.preview-flower-box');
-    if(old){
-      const tmp=document.createElement('div');
-      tmp.innerHTML=flowerIconHtmlPreview(name);
-      const newEl=tmp.firstElementChild;
-      newEl.id='preview-icon-wrap';
-      old.replaceWith(newEl);
-    }
+// 사용자가 이름을 입력할 때도 실시간으로 꽃 모양과 배경 색이 어울리게 갱신되도록 개선
+function onNameInput(val) {
+  const desc = document.getElementById('input-desc').value;
+  setPreview(val, desc);
+}
+
+// 항상 무작위/매칭 꽃 무늬 아이콘으로 렌더링하도록 갱신
+function setPreview(name, desc) {
+  document.getElementById('preview-area').style.display = 'flex';
+  document.getElementById('preview-name').textContent = name || '—';
+  document.getElementById('preview-desc').textContent = desc || '—';
+  document.getElementById('preview-desc').className = 'preview-desc';
+  
+  const wrap = document.getElementById('preview-icon-wrap');
+  if (!wrap) return;
+
+  if (name) {
+    const { svgFn, bg } = randomFlower(name);
+    const svg = svgFn('#fff').replace(/\n\s*/g, ' ');
+    wrap.className = 'preview-flower-box';
+    wrap.style.background = bg;
+    wrap.innerHTML = svg;
+  } else {
+    // 기본 지구본 형상
+    wrap.className = 'preview-icon-box';
+    wrap.style.background = '';
+    wrap.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>`;
   }
 }
 
@@ -430,22 +467,22 @@ async function fetchMeta(url){
   const domain=getDomain(url);
   const nameEl=document.getElementById('input-name');
 
-  // 로딩 상태
+  // 로딩 시작 상태
   document.getElementById('preview-area').style.display='flex';
   document.getElementById('preview-name').textContent=domain.replace('www.','');
   document.getElementById('preview-desc').className='preview-desc preview-loading';
   document.getElementById('preview-desc').textContent='AI가 읽어오는 중...';
+  
   const wrap=document.getElementById('preview-icon-wrap');
-  wrap.className='preview-icon-box';
-  wrap.innerHTML=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>`;
+  if(wrap) {
+    wrap.className='preview-icon-box';
+    wrap.style.background='';
+    wrap.innerHTML=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>`;
+  }
 
-  // 파비콘 + Gemini 병렬
-  const [faviconUrl, aiResult] = await Promise.all([
-    resolveFavicon(url),
-    callGemini(url, domain)
-  ]);
+  // 파비콘 탐색 프로세스는 제외하고, Gemini AI 메타 정보만 비동기 획득하여 속도를 혁신적으로 향상시킵니다.
+  const aiResult = await callGemini(url, domain);
 
-  // AI 결과 먼저 적용 (이름이 확정돼야 꽃 아이콘도 맞게 나옴)
   const aiName = aiResult.name || '';
   const aiDesc = aiResult.desc || '';
   const finalName = aiName || domain.replace('www.','').split('.')[0];
@@ -459,70 +496,89 @@ async function fetchMeta(url){
   document.getElementById('preview-desc').className = 'preview-desc';
   document.getElementById('preview-desc').textContent = aiDesc || '설명을 직접 입력해 주세요';
 
-  // 파비콘 or 꽃 아이콘
-  pendingIcon = faviconUrl;
-  const previewWrap = document.getElementById('preview-icon-wrap');
-  if(faviconUrl){
-    previewWrap.className='preview-icon-box';
-    previewWrap.style.background='';
-    previewWrap.innerHTML=`<img src="${esc(faviconUrl)}" alt="" style="width:34px;height:34px;object-fit:contain">`;
-  } else {
-    // 꽃 미리보기
-    const tmp=document.createElement('div');
-    tmp.innerHTML=flowerIconHtmlPreview(finalName);
-    const newEl=tmp.firstElementChild;
-    newEl.id='preview-icon-wrap';
-    previewWrap.replaceWith(newEl);
+  // 로딩이 완료되면 즉시 이름 해시에 매칭되는 꽃 아이콘을 생성해 보여줍니다.
+  if(wrap) {
+    const {svgFn, bg} = randomFlower(finalName);
+    const svg = svgFn('#fff').replace(/\n\s*/g,' ');
+    wrap.className='preview-flower-box';
+    wrap.style.background=bg;
+    wrap.innerHTML=svg;
   }
 }
 
-/* ── Gemini 호출 (이름+설명 JSON) ── */
+/* ── API 우선순위 폴백(Fallback) 연동 구현 ── */
 async function callGemini(url, domain){
-  try{
-    const res=await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        contents:[{parts:[{text:
-          `다음 웹사이트의 정보를 분석해서 JSON으로만 답해줘. 다른 말은 절대 쓰지 마.\n` +
-          `URL: ${url}\n도메인: ${domain}\n\n` +
-          `{\n` +
-          `  "name": "이 웹서비스/앱의 실제 한국어 이름 또는 서비스명. 도메인 랜덤 문자열은 절대 쓰지 말고, 페이지 타이틀이나 서비스 특성으로 유추해. 10자 이내",\n` +
-          `  "desc": "이 서비스를 한국어로 20자 이내 한 줄 설명. 이모지 없이"\n` +
-          `}`
-        }]}],
-        generationConfig:{maxOutputTokens:120,temperature:0.2}
-      })
-    });
-    const data=await res.json();
-    const raw=(data?.candidates?.[0]?.content?.parts?.[0]?.text||'').trim();
-    const clean=raw.replace(/```json|```/g,'').trim();
-    const json=JSON.parse(clean);
-    return{
-      name:(json.name||'').replace(/["'「『」』]/g,'').slice(0,10),
-      desc:(json.desc||'').replace(/["'「『」』]/g,'').slice(0,20)
-    };
-  }catch(e){return{name:'',desc:''}}
+  for (const modelName of MODEL_PRIORITY) {
+    try {
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_KEY}`;
+      console.log(`요청 모델: ${modelName}`);
+      
+      const res = await fetch(endpoint, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          contents:[{parts:[{text:
+            `다음 웹사이트의 정보를 분석해서 JSON으로만 답해줘. 다른 말은 절대 쓰지 마.\n` +
+            `URL: ${url}\n도메인: ${domain}\n\n` +
+            `{\n` +
+            `  "name": "이 웹서비스/앱의 실제 한국어 이름 또는 서비스명. 도메인 랜덤 문자열은 절대 쓰지 말고, 페이지 타이틀이나 서비스 특성으로 유추해. 10자 이내",\n` +
+            `  "desc": "이 서비스를 한국어로 20자 이내 한 줄 설명. 이모지 없이"\n` +
+            `}`
+          }]}],
+          generationConfig:{maxOutputTokens:120,temperature:0.2}
+        })
+      });
+
+      if (!res.ok) {
+        console.warn(`모델 ${modelName} 호출 실패(상태코드: ${res.status}). 다음 우선순위로 진행합니다.`);
+        continue;
+      }
+
+      const data = await res.json();
+      const raw = (data?.candidates?.[0]?.content?.parts?.[0]?.text||'').trim();
+      const clean = raw.replace(/```json|```/g,'').trim();
+      const json = JSON.parse(clean);
+      
+      return {
+        name: (json.name||'').replace(/["'「『」』]/g,'').slice(0,10),
+        desc: (json.desc||'').replace(/["'「『」』]/g,'').slice(0,20)
+      };
+    } catch(e) {
+      console.error(`모델 ${modelName} 처리 오류:`, e);
+    }
+  }
+  return {name:'', desc:''};
 }
 
-/* ── 저장/삭제 ── */
-function saveApp(){
+/* ── 저장 및 삭제 ── */
+async function saveApp(){
   const url=document.getElementById('input-url').value.trim();
   const name=document.getElementById('input-name').value.trim();
   const desc=document.getElementById('input-desc').value.trim();
-  if(!url||!name){alert('URL과 이름을 입력해 주세요 🌸');return}
-  const entry={url,name,desc,icon:pendingIcon};
+  
+  if(!url||!name){
+    await showCustomAlert('URL과 이름을 입력해 주세요 🌸', '⚠️', '입력 오류');
+    return;
+  }
+  
+  const entry={url,name,desc};
   if(editingId){
     const i=apps.findIndex(a=>a.id===editingId);
-    if(i>=0)apps[i]={...apps[i],...entry};
+    if(i>=0) apps[i]={...apps[i],...entry};
   } else {
     apps.push({id:Date.now().toString(),...entry});
   }
-  saveApps();render();closeModal();
+  saveApps();
+  render();
+  closeModal();
 }
-function deleteApp(id){
-  if(!confirm('이 앱을 삭제할까요?'))return;
-  apps=apps.filter(a=>a.id!==id);saveApps();render();
+
+async function deleteApp(id){
+  const confirmed = await showCustomConfirm('이 앱을 삭제할까요?', '🗑️', '앱 삭제');
+  if(!confirmed) return;
+  apps=apps.filter(a=>a.id!==id);
+  saveApps();
+  render();
 }
 
 loadApps();
