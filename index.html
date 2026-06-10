@@ -73,6 +73,13 @@ body{font-family:'Nanum Gothic',sans-serif;min-height:100vh;background:#fffbf0;b
 .btn-save{flex:2.5;padding:13px;border:none;border-radius:16px;background:#f59e0b;font-size:15px;cursor:pointer;color:#fff;font-family:'Nanum Gothic',sans-serif;font-weight:800;box-shadow:0 6px 20px rgba(245,158,11,.4);transition:transform .18s,box-shadow .18s}
 .btn-save:hover{transform:scale(1.03);box-shadow:0 8px 26px rgba(245,158,11,.5)}
 .btn-save:active{transform:scale(.97)}
+.app-item.dragging{opacity:0.35;transform:scale(0.92)!important}
+.app-item.drag-over{transform:scale(1.08)!important}
+.app-item{cursor:grab;touch-action:none}
+.app-item:active{cursor:grabbing}
+/* 드래그 중일 때 수정/삭제 숨김 */
+.grid.is-dragging .app-actions{display:none!important}
+
 /* ── 반응형 그리드 ── */
 @media (min-width:480px){.grid{grid-template-columns:repeat(5,1fr)}}
 @media (min-width:600px){.grid{grid-template-columns:repeat(6,1fr)}}
@@ -287,7 +294,7 @@ async function loadApps(){
   } else {
     try{apps=JSON.parse(localStorage.getItem('cenon-apps')||'[]');}catch(e){apps=[];}
   }
-  hideStatus(); render();
+  hideStatus(); render(); initDrag();
 }
 function saveApps(){
   try{localStorage.setItem('cenon-apps',JSON.stringify(apps));}catch(e){}
@@ -304,10 +311,11 @@ function render(){
   document.getElementById('app-count').textContent='앱 '+apps.length+'개';
   if(!apps.length){gw.style.display='none';empty.style.display='block';return;}
   empty.style.display='none'; gw.style.display='block';
+  // 렌더 후 initDrag는 호출부에서 실행
   grid.innerHTML=apps.map(function(a,i){
     var iconHtml;
     iconHtml=makeFlowerDiv(a.name,a.url,false);
-    return '<div class="app-item" style="animation-delay:'+i*35+'ms">'
+    return '<div class="app-item" data-id="'+a.id+'" style="animation-delay:'+i*35+'ms">'
       +'<div class="app-actions">'
       +'<button class="act-btn act-edit" onclick="APP.edit(\''+a.id+'\')">✏️</button>'
       +'<button class="act-btn act-del" onclick="APP.del(\''+a.id+'\')">🗑️</button>'
@@ -434,7 +442,7 @@ function saveApp(){
   } else {
     apps.push(Object.assign({id:Date.now().toString()},entry));
   }
-  saveApps(); render(); closeModal();
+  saveApps(); render(); initDrag(); closeModal();
 }
 
 /* ── 전역 APP 객체 ── */
@@ -444,13 +452,123 @@ window.APP={
   del:function(id){
     if(!confirm('이 앱을 삭제할까요?'))return;
     apps=apps.filter(function(a){return a.id!==id;});
-    saveApps(); render();
+    saveApps(); render(); initDrag();
   },
   swapToFlower:function(img,name,url){
     var wrap=img.closest('.app-icon-img');
     if(wrap) wrap.outerHTML=makeFlowerDiv(name,url,false);
   }
 };
+
+/* ── 드래그 앤 드롭 순서 변경 ── */
+var dragSrcId = null;
+
+function initDrag(){
+  var grid = document.getElementById('app-grid');
+  if(!grid) return;
+
+  // 터치/마우스 공통으로 Sortable 없이 직접 구현
+  var items = grid.querySelectorAll('.app-item');
+  items.forEach(function(item){
+    // 마우스
+    item.addEventListener('dragstart', onDragStart);
+    item.addEventListener('dragenter', onDragEnter);
+    item.addEventListener('dragover',  function(e){ e.preventDefault(); });
+    item.addEventListener('dragleave', onDragLeave);
+    item.addEventListener('drop',      onDrop);
+    item.addEventListener('dragend',   onDragEnd);
+    item.setAttribute('draggable','true');
+
+    // 터치
+    item.addEventListener('touchstart', onTouchStart, {passive:true});
+    item.addEventListener('touchmove',  onTouchMove,  {passive:false});
+    item.addEventListener('touchend',   onTouchEnd,   {passive:true});
+  });
+}
+
+function onDragStart(e){
+  dragSrcId = this.dataset.id;
+  this.classList.add('dragging');
+  document.getElementById('app-grid').classList.add('is-dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function onDragEnter(e){
+  e.preventDefault();
+  if(this.dataset.id !== dragSrcId) this.classList.add('drag-over');
+}
+function onDragLeave(){
+  this.classList.remove('drag-over');
+}
+function onDrop(e){
+  e.preventDefault();
+  var targetId = this.dataset.id;
+  if(!dragSrcId || dragSrcId === targetId) return;
+  var si = apps.findIndex(function(a){return a.id===dragSrcId;});
+  var ti = apps.findIndex(function(a){return a.id===targetId;});
+  if(si<0||ti<0) return;
+  var moved = apps.splice(si,1)[0];
+  apps.splice(ti,0,moved);
+  saveApps(); render(); initDrag();
+}
+function onDragEnd(){
+  document.getElementById('app-grid').classList.remove('is-dragging');
+  document.querySelectorAll('.app-item').forEach(function(el){
+    el.classList.remove('dragging','drag-over');
+  });
+}
+
+/* 터치 드래그 */
+var touchDragId=null, touchClone=null, touchOffX=0, touchOffY=0;
+function onTouchStart(e){
+  var touch=e.touches[0];
+  touchDragId=this.dataset.id;
+  var rect=this.getBoundingClientRect();
+  touchOffX=touch.clientX-rect.left;
+  touchOffY=touch.clientY-rect.top;
+  // 클론 생성
+  touchClone=this.cloneNode(true);
+  touchClone.style.cssText='position:fixed;z-index:9999;opacity:0.75;pointer-events:none;width:'+rect.width+'px;transition:none;border-radius:20px;';
+  touchClone.style.left=(touch.clientX-touchOffX)+'px';
+  touchClone.style.top=(touch.clientY-touchOffY)+'px';
+  document.body.appendChild(touchClone);
+  this.style.opacity='0.3';
+  document.getElementById('app-grid').classList.add('is-dragging');
+}
+function onTouchMove(e){
+  e.preventDefault();
+  if(!touchClone) return;
+  var touch=e.touches[0];
+  touchClone.style.left=(touch.clientX-touchOffX)+'px';
+  touchClone.style.top=(touch.clientY-touchOffY)+'px';
+  // 아래 요소 찾기
+  touchClone.style.display='none';
+  var el=document.elementFromPoint(touch.clientX,touch.clientY);
+  touchClone.style.display='';
+  var target=el?el.closest('.app-item'):null;
+  document.querySelectorAll('.app-item').forEach(function(x){x.classList.remove('drag-over');});
+  if(target && target.dataset.id && target.dataset.id!==touchDragId) target.classList.add('drag-over');
+}
+function onTouchEnd(e){
+  if(!touchClone) return;
+  var touch=e.changedTouches[0];
+  touchClone.style.display='none';
+  var el=document.elementFromPoint(touch.clientX,touch.clientY);
+  touchClone.style.display='';
+  document.body.removeChild(touchClone); touchClone=null;
+  document.getElementById('app-grid').classList.remove('is-dragging');
+  document.querySelectorAll('.app-item').forEach(function(x){
+    x.style.opacity=''; x.classList.remove('drag-over');
+  });
+  var target=el?el.closest('.app-item'):null;
+  if(!target||!target.dataset.id||target.dataset.id===touchDragId){touchDragId=null;return;}
+  var si=apps.findIndex(function(a){return a.id===touchDragId;});
+  var ti=apps.findIndex(function(a){return a.id===target.dataset.id;});
+  touchDragId=null;
+  if(si<0||ti<0) return;
+  var moved=apps.splice(si,1)[0];
+  apps.splice(ti,0,moved);
+  saveApps(); render(); initDrag();
+}
 
 /* ── 이벤트 바인딩 (onclick 인라인 없이 여기서만 등록) ── */
 document.getElementById('btn-add').addEventListener('click',openAdd);
