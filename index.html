@@ -6,13 +6,13 @@
   <meta name="theme-color" content="#f8f6f3">
   <meta name="description" content="센트럴온누리약국의 앱, 약국 업무 도구, 서식을 한곳에서 찾습니다.">
   <title>약국 업무 모음 · 센트럴온누리약국</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="app.js"></script>
+  <link rel="stylesheet" href="style.css?v=2">
+  <script type="module" src="app.js?v=2"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">본문으로 이동</a>
   <div class="shell">
-    <aside class="navigation">
+    <header class="navigation">
       <a class="brand" href="#main">
         <span class="brand-mark" aria-hidden="true">+</span>
         <span>센트럴온누리약국<small>업무 모음</small></span>
@@ -25,38 +25,28 @@
         <a href="#forms"><span aria-hidden="true">▤</span>다빈도 서식</a>
       </nav>
       <a class="provider side-provider" href="https://allaipharm.com/AI_PHARM/aipharm.php" target="_blank" rel="noopener">AI팜 열기 <span aria-hidden="true">↗</span></a>
-    </aside>
+    </header>
 
     <main id="main" class="main">
+      <h1 class="sr-only" id="page-title">약국 업무 모음</h1>
       <header class="toolbar">
-        <p id="today-line"></p>
+        <form class="medicine-search" action="https://nedrug.mfds.go.kr/searchDrug" method="get" target="_blank" rel="noopener" role="search" aria-label="의약품 검색">
+          <label class="sr-only" for="medicine-name">의약품명</label>
+          <input type="search" id="medicine-name" name="itemName" placeholder="의약품 이름" maxlength="100" required>
+          <input type="hidden" name="searchYn" value="true">
+          <button type="submit" title="식약처 의약품안전나라에서 검색">의약품 검색 <span aria-hidden="true">↗</span></button>
+        </form>
         <div class="toolbar-actions">
           <button type="button" class="btn" id="find-tools" aria-keyshortcuts="Control+k Meta+k">도구 찾기 <kbd>Ctrl K</kbd></button>
           <button type="button" class="btn" id="widget-settings">위젯 설정</button>
-          <button type="button" class="btn btn-primary" id="add-app"><span aria-hidden="true">＋</span> 앱 추가</button>
         </div>
       </header>
-
-      <section class="hero" aria-labelledby="page-title">
-        <div class="hero-content">
-          <h1 id="page-title">약국 업무 모음</h1>
-          <p>자주 쓰는 앱과 약국 업무 도구를 한곳에서 여세요.</p>
-          <form class="medicine-search" action="https://nedrug.mfds.go.kr/searchDrug" method="get" target="_blank" rel="noopener" role="search" aria-label="의약품 검색">
-            <label class="sr-only" for="medicine-name">의약품명</label>
-            <input type="search" id="medicine-name" name="itemName" placeholder="의약품 이름을 입력하세요" maxlength="100" required>
-            <input type="hidden" name="searchYn" value="true">
-            <button type="submit">의약품 검색</button>
-          </form>
-          <a class="medicine-source" href="https://nedrug.mfds.go.kr/searchDrug" target="_blank" rel="noopener">식약처 의약품안전나라 <span aria-hidden="true">↗</span></a>
-        </div>
-        <div class="hero-mark" aria-hidden="true"><span></span><span></span></div>
-      </section>
 
       <div class="dashboard">
         <div class="tool-sections">
           <section id="favorites" class="tool-section favorite-section" aria-labelledby="favorites-title">
             <div class="section-heading">
-              <div><h2 id="favorites-title">즐겨찾기</h2><p>자주 여는 도구를 별표로 고정하세요.</p></div>
+              <h2 id="favorites-title">즐겨찾기</h2>
               <button class="btn btn-small" type="button" id="manage-favorites" aria-pressed="false">순서 편집</button>
             </div>
             <div id="favorites-list" class="tool-grid"></div>
@@ -65,23 +55,26 @@
           <section id="my-apps" class="tool-section" aria-labelledby="apps-title">
             <div class="section-heading">
               <div><h2 id="apps-title">내 앱 <span id="app-count" class="count"></span></h2><p id="sync-status" role="status"></p></div>
-              <div class="section-actions"><button class="btn btn-small" type="button" id="manage-apps" aria-pressed="false">앱 관리</button></div>
+              <div class="section-actions">
+                <button class="btn btn-small" type="button" id="manage-apps" aria-pressed="false">앱 관리</button>
+                <button class="btn btn-small btn-primary" type="button" id="add-app"><span aria-hidden="true">＋</span> 앱 추가</button>
+              </div>
             </div>
             <div id="app-list" class="tool-grid"></div>
           </section>
 
           <section id="ai" class="tool-section" aria-labelledby="ai-title">
-            <div class="section-heading"><div><h2 id="ai-title">AI 도구</h2><p>복약안내문, 가격표, 제품 소개 자료를 만드세요.</p></div></div>
+            <div class="section-heading"><h2 id="ai-title">AI 도구</h2></div>
             <div id="ai-list" class="tool-grid"></div>
           </section>
 
           <section id="work" class="tool-section" aria-labelledby="work-title">
-            <div class="section-heading"><div><h2 id="work-title">약국 업무</h2><p>의약품 조회부터 재고 관리와 주문까지.</p></div></div>
+            <div class="section-heading"><h2 id="work-title">약국 업무</h2></div>
             <div id="work-list" class="tool-grid"></div>
           </section>
 
           <section id="forms" class="tool-section" aria-labelledby="forms-title">
-            <div class="section-heading"><div><h2 id="forms-title">다빈도 서식</h2><p>자주 쓰는 문서를 작성하고 인쇄하세요.</p></div></div>
+            <div class="section-heading"><h2 id="forms-title">다빈도 서식</h2></div>
             <div id="forms-list" class="tool-grid"></div>
           </section>
         </div>
@@ -89,6 +82,7 @@
         <aside class="widgets" id="widgets" aria-label="업무 위젯">
           <section id="widget-calendar" class="widget" aria-labelledby="calendar-title">
             <h2 id="calendar-title">달력</h2>
+            <p id="today-line"></p>
             <div class="calendar-header">
               <button type="button" class="icon-btn" id="calendar-prev" aria-label="이전 달">‹</button>
               <p id="calendar-month" aria-live="polite"></p>
@@ -131,8 +125,8 @@
     <form id="app-form">
       <label for="app-url">앱 주소</label>
       <input id="app-url" type="text" inputmode="url" placeholder="https://" required maxlength="2048" autofocus>
-      <label for="app-name">앱 이름</label>
-      <input id="app-name" type="text" required maxlength="40">
+      <label for="app-name">앱 이름 <span>(선택)</span></label>
+      <input id="app-name" type="text" placeholder="비워 두면 주소에서 자동으로 입력" maxlength="40">
       <label for="app-desc">설명 <span>(선택)</span></label>
       <textarea id="app-desc" rows="2" maxlength="80"></textarea>
       <p id="app-error" role="alert"></p>

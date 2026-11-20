@@ -194,7 +194,7 @@ function allTools() {
       appId: entry.id,
       url: appUrl(entry.url),
       group: 'apps',
-      icon: '▦',
+      icon: Array.from(entry.name.trim())[0],
     })),
     ...providerTools,
   ];
@@ -290,13 +290,14 @@ function renderCard(tool, view, tools, index) {
   card.dataset.toolId = tool.id;
   const link = toolLink(tool);
   link.setAttribute('aria-label', tool.name);
+  if (tool.desc) {
+    link.title = tool.desc;
+    link.setAttribute('aria-description', tool.desc);
+  }
   link.draggable = false;
   const icon = create('span', 'tool-icon tone-' + tool.group, tool.icon);
   icon.setAttribute('aria-hidden', 'true');
-  const copy = create('span', 'tool-copy');
-  copy.append(create('span', 'tool-name', tool.name));
-  if (tool.desc) copy.append(create('span', 'tool-desc', tool.desc));
-  link.append(icon, copy);
+  link.append(icon, create('span', 'tool-name', tool.name));
 
   const selected = favorites.includes(tool.id);
   const star = control(tool.name + ' 즐겨찾기 ' + (selected ? '해제' : '추가'), selected ? '★' : '☆', 'icon-btn star', () => toggleFavorite(tool));
@@ -343,7 +344,7 @@ function renderCards() {
   const userApps = tools.filter((tool) => tool.group === 'apps');
   const views = [
     ['favorites', 'favorites-list', favoritesList, '도구의 별표를 눌러 즐겨찾기에 추가하세요.'],
-    ['apps', 'app-list', userApps, '상단의 앱 추가를 눌러 쓰고 있는 웹앱을 등록하세요.'],
+    ['apps', 'app-list', userApps, '앱 추가를 눌러 쓰고 있는 웹앱을 등록하세요.'],
     ...['ai', 'work', 'forms'].map((group) => [group, group + '-list', tools.filter((tool) => tool.group === group)]),
   ];
   for (const [view, id, items, emptyText] of views) {
@@ -396,17 +397,22 @@ function openEditor(id = null) {
 }
 
 byId('add-app').addEventListener('click', () => openEditor());
+
+function suggestAppDetails(url) {
+  const knownTool = providerTools.find((tool) => tool.url === url);
+  if (knownTool) return knownTool;
+  const hostname = new URL(url).hostname;
+  const firstLabel = hostname.replace(/^www\./, '').split('.')[0];
+  return {name: (firstLabel || hostname).slice(0, 40), desc: ''};
+}
+
 urlField.addEventListener('blur', () => {
   const normalized = appUrl(urlField.value);
-  if (!normalized || nameField.value || editingId !== null) return;
-  const knownTool = providerTools.find((tool) => tool.url === normalized);
-  if (knownTool) {
-    nameField.value = knownTool.name;
-    if (!descField.value) descField.value = knownTool.desc;
-  } else {
-    nameField.value = new URL(normalized).hostname.replace(/^www\./, '').split('.')[0].slice(0, 40);
-    nameField.dataset.suggested = 'true';
-  }
+  if (!normalized || nameField.value.trim() || editingId !== null) return;
+  const suggested = suggestAppDetails(normalized);
+  nameField.value = suggested.name;
+  nameField.dataset.suggested = 'true';
+  if (!descField.value.trim()) descField.value = suggested.desc;
 });
 nameField.addEventListener('focus', () => {
   if (nameField.dataset.suggested) {
@@ -417,15 +423,18 @@ nameField.addEventListener('focus', () => {
 editorForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const url = appUrl(urlField.value);
-  const name = nameField.value.trim();
-  if (!url || !name) {
-    byId('app-error').textContent = '유효한 웹 주소와 앱 이름을 입력하세요.';
-    (url ? nameField : urlField).focus();
+  if (!url) {
+    byId('app-error').textContent = '유효한 웹 주소를 입력하세요.';
+    urlField.focus();
     return;
   }
-  const entry = {name, url, desc: descField.value.trim()};
+  const name = nameField.value.trim();
+  const desc = descField.value.trim();
+  const suggested = name ? null : suggestAppDetails(url);
+  const entry = {name: name || suggested.name, url, desc: desc || suggested?.desc || ''};
   if (editingId === null) {
-    const id = crypto.randomUUID();
+    const bytes = crypto.getRandomValues(new Uint8Array(16));
+    const id = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
     changeApps({type: 'add', id, entry: {id, ...entry}});
   } else {
     changeApps({type: 'edit', id: editingId, entry});
