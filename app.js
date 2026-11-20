@@ -40,18 +40,60 @@ const providerTools = [
   name,
   desc,
   icon,
+  iconAsset: id,
   url: new URL(path, aiPharm + 'AI_PHARM/').href,
   keywords,
 }));
 
+const sharedAppIcons = new Map([
+  ['1781101547262', 'daily'],
+  ['1781102113663', 'retail'],
+  ['1781102140286', 'packet'],
+  ['1781102646663', 'expiry'],
+  ['1781102171486', 'school'],
+  ['1781102199726', 'essay'],
+  ['1781102226806', 'admission'],
+  ['1781690729343', 'quicknote'],
+  ['1782347548929', 'changes'],
+]);
+
+const categoryMenus = [...document.querySelectorAll('.navigation details')];
+for (const tool of providerTools) {
+  byId('menu-' + tool.group).append(toolLink(tool, 'menu-tool', tool.name));
+}
+for (const menu of categoryMenus) {
+  menu.addEventListener('toggle', () => {
+    if (menu.open) {
+      categoryMenus.filter((other) => other !== menu).forEach((other) => { other.open = false; });
+    }
+  });
+  menu.addEventListener('click', (event) => {
+    if (event.target.closest('a')) menu.open = false;
+  });
+}
+document.addEventListener('pointerdown', (event) => {
+  categoryMenus.filter((menu) => menu.open && !menu.contains(event.target)).forEach((menu) => { menu.open = false; });
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape') return;
+  const menu = categoryMenus.find((item) => item.open);
+  if (!menu) return;
+  menu.open = false;
+  menu.querySelector('summary').focus();
+});
+
 const groupNames = {apps: '내 앱', ai: 'AI팜 · AI', work: 'AI팜 · 약국 업무', forms: 'AI팜 · 서식'};
-const defaultFavorites = ['guide', 'prices', 'statement', 'shortage'].map((id) => 'tool:' + id);
+const defaultFavorites = ['guide', 'prices', 'statement', 'labels', 'marks', 'employment', 'products', 'manager']
+  .map((id) => 'tool:' + id);
 const storageKeys = {
   apps: 'cenon-apps',
   pending: 'cenon-apps-pending',
   favorites: 'cenon-workspace-favorites',
   widgets: 'cenon-workspace-widgets',
   recent: 'cenon-workspace-recent',
+  recentMedicines: 'cenon-workspace-recent-medicines',
+  theme: 'cenon-workspace-theme',
+  alarms: 'cenon-workspace-alarms',
 };
 
 function readList(key, fallback = []) {
@@ -195,6 +237,7 @@ function allTools() {
       url: appUrl(entry.url),
       group: 'apps',
       icon: Array.from(entry.name.trim())[0],
+      iconAsset: sharedAppIcons.get(String(entry.id)) ?? 'apps',
     })),
     ...providerTools,
   ];
@@ -214,6 +257,11 @@ function control(label, text, className, handler) {
   button.setAttribute('aria-label', label);
   button.addEventListener('click', handler);
   return button;
+}
+
+function recordId() {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
 function savePreference(key, value) {
@@ -297,6 +345,13 @@ function renderCard(tool, view, tools, index) {
   link.draggable = false;
   const icon = create('span', 'tool-icon tone-' + tool.group, tool.icon);
   icon.setAttribute('aria-hidden', 'true');
+  const image = create('img');
+  image.alt = '';
+  image.decoding = 'async';
+  image.draggable = false;
+  image.src = 'assets/icons/' + tool.iconAsset + '.webp';
+  image.addEventListener('error', () => image.remove());
+  icon.append(image);
   link.append(icon, create('span', 'tool-name', tool.name));
 
   const selected = favorites.includes(tool.id);
@@ -349,13 +404,14 @@ function renderCards() {
   ];
   for (const [view, id, items, emptyText] of views) {
     const list = byId(id);
+    const scroll = list.scrollLeft;
     list.replaceChildren(...(items.length
       ? items.map((item, index) => renderCard(item, view, items, index))
       : [create('p', 'empty', emptyText)]));
+    list.scrollLeft = scroll;
   }
   byId('app-count').textContent = userApps.length + '개';
   byId('manage-apps').hidden = !userApps.length;
-  byId('manage-favorites').hidden = favoritesList.length < 2;
   if (focusList) {
     const card = [...byId(focusList).children].find((item) => item.dataset.toolId === focused.dataset.toolId);
     const button = [...(card?.querySelectorAll('button') ?? [])].find((item) => item.dataset.action === action);
@@ -374,7 +430,29 @@ byId('manage-apps').addEventListener('click', () => {
 });
 byId('manage-favorites').addEventListener('click', () => {
   managingFavorites = !managingFavorites;
-  toggleManagement('manage-favorites', managingFavorites, '순서 편집');
+  byId('manage-favorites').setAttribute('aria-expanded', String(managingFavorites));
+  byId('manage-favorites').textContent = managingFavorites ? '완료' : '즐겨찾기 편집';
+  byId('manage-favorites').setAttribute('aria-label', managingFavorites ? '완료' : '즐겨찾기 편집');
+  byId('favorites').classList.toggle('editing-dock', managingFavorites);
+  byId('reset-favorites').hidden = !managingFavorites;
+  byId('favorite-drop').hidden = !managingFavorites;
+  renderCards();
+});
+byId('reset-favorites').addEventListener('click', () => {
+  favorites = [...defaultFavorites];
+  savePreference(storageKeys.favorites, favorites);
+  renderCards();
+});
+const favoriteDrop = byId('favorite-drop');
+favoriteDrop.addEventListener('dragover', (event) => {
+  if (dragged?.view === 'favorites') event.preventDefault();
+});
+favoriteDrop.addEventListener('drop', (event) => {
+  if (dragged?.view !== 'favorites') return;
+  event.preventDefault();
+  const tool = {id: dragged.id};
+  dragged = null;
+  toggleFavorite(tool);
 });
 
 const editor = byId('app-dialog');
@@ -433,8 +511,7 @@ editorForm.addEventListener('submit', (event) => {
   const suggested = name ? null : suggestAppDetails(url);
   const entry = {name: name || suggested.name, url, desc: desc || suggested?.desc || ''};
   if (editingId === null) {
-    const bytes = crypto.getRandomValues(new Uint8Array(16));
-    const id = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+    const id = recordId();
     changeApps({type: 'add', id, entry: {id, ...entry}});
   } else {
     changeApps({type: 'edit', id: editingId, entry});
@@ -515,7 +592,7 @@ for (const button of document.querySelectorAll('[data-close]')) {
   button.addEventListener('click', () => button.closest('dialog').close());
 }
 
-const widgetNames = {calendar: '달력', deadline: '도매상 주문 마감', supply: '의약품 공급 소식'};
+const widgetNames = {supply: '의약품 공급중단·부족', deadline: '도매상 주문 마감', calendar: '달력'};
 const widgetOptions = byId('widget-options');
 const widgetDialog = byId('widget-dialog');
 const widgetPanel = byId('widgets');
@@ -578,6 +655,26 @@ byId('widget-settings').addEventListener('click', () => {
   widgetDialog.showModal();
 });
 
+const themeDialog = byId('theme-dialog');
+const themeChoices = [...themeDialog.querySelectorAll('[data-theme-choice]')];
+function setTheme(value) {
+  const theme = themeChoices.some((button) => button.dataset.themeChoice === value) ? value : 'mint';
+  document.documentElement.dataset.theme = theme;
+  for (const choice of themeChoices) {
+    choice.setAttribute('aria-pressed', String(choice.dataset.themeChoice === theme));
+  }
+}
+setTheme(readList(storageKeys.theme)[0]);
+byId('theme-settings').addEventListener('click', () => themeDialog.showModal());
+for (const choice of themeChoices) {
+  choice.addEventListener('click', () => {
+    const theme = choice.dataset.themeChoice;
+    setTheme(theme);
+    savePreference(storageKeys.theme, [theme]);
+    themeDialog.close();
+  });
+}
+
 const koreaDate = new Intl.DateTimeFormat('ko-KR', {dateStyle: 'full', timeZone: 'Asia/Seoul'});
 const dateParts = new Intl.DateTimeFormat('en', {year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'Asia/Seoul'});
 function kstDateParts() {
@@ -611,7 +708,146 @@ for (const [id, offset] of [['calendar-prev', -1], ['calendar-next', 1]]) {
   });
 }
 
+const clockFormat = new Intl.DateTimeFormat('en-GB', {
+  hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Seoul',
+});
+const clockDate = new Intl.DateTimeFormat('ko-KR', {
+  month: 'long', day: 'numeric', weekday: 'long', timeZone: 'Asia/Seoul',
+});
+const isAlarmTime = (value) => typeof value === 'string' && /^(?:[01][0-9]|2[0-3]):[0-5][0-9]$/.test(value);
+const alarmDialog = byId('alarm-dialog');
+const alarmForm = byId('alarm-form');
+const alarmName = byId('alarm-name');
+const alarmTime = byId('alarm-time');
+let alarms = readList(storageKeys.alarms).filter((item) => item && typeof item.id === 'string'
+  && typeof item.name === 'string' && item.name.trim() && isAlarmTime(item.time));
+let editingAlarm = null;
+let lastMinute = null;
+
+function minutesSinceMidnight(time) {
+  const [hours, minutes] = time.split(':').map(Number);
+  return hours * 60 + minutes;
+}
+
+function renderUpcomingAlarms(time) {
+  const now = minutesSinceMidnight(time);
+  const upcoming = alarms.map((alarm) => ({
+    alarm,
+    remaining: (minutesSinceMidnight(alarm.time) - now + 1440) % 1440,
+  })).sort((one, other) => one.remaining - other.remaining);
+  const list = byId('deadline-next');
+  list.replaceChildren();
+  if (upcoming.length === 0) {
+    list.append(create('p', '', '도매상별 마감 시간을 등록하세요.'));
+    return;
+  }
+  for (const {alarm, remaining} of upcoming.slice(0, 3)) {
+    const item = create('p', 'upcoming-alarm');
+    const hint = remaining === 0 ? '지금 마감' : remaining < 60 ? remaining + '분 남음' : '';
+    const label = alarm.time + (hint ? ' · ' + hint : '');
+    item.append(create('strong', '', alarm.name), create('span', '', label));
+    list.append(item);
+  }
+}
+
+function refreshClock() {
+  const now = new Date();
+  const minute = Math.floor(now.getTime() / 60000);
+  if (lastMinute === minute) return;
+  const time = clockFormat.format(now);
+  byId('workspace-clock').textContent = time;
+  byId('workspace-clock').dateTime = time;
+  byId('clock-date').textContent = clockDate.format(now);
+  renderUpcomingAlarms(time);
+  const due = alarms.filter((alarm) => alarm.time === time);
+  if (due.length) {
+    byId('alarm-message').textContent = due.map((alarm) => alarm.name).join(', ') + ' 주문 마감 시간입니다.';
+    byId('alarm-toast').hidden = false;
+  }
+  if (lastMinute !== null && koreaDate.format(now) !== koreaDate.format(lastMinute * 60000)) {
+    renderCalendar();
+  }
+  lastMinute = minute;
+}
+
+function fillAlarmForm(alarm = null) {
+  editingAlarm = alarm?.id ?? null;
+  alarmName.value = alarm?.name ?? '';
+  alarmTime.value = alarm?.time ?? '';
+  byId('cancel-alarm-edit').hidden = !alarm;
+  byId('save-alarm').textContent = alarm ? '알람 저장' : '알람 추가';
+  byId('alarm-error').textContent = '';
+}
+
+function renderAlarmSettings() {
+  const list = byId('alarm-list');
+  list.replaceChildren();
+  for (const alarm of alarms.slice().sort((one, other) => one.time.localeCompare(other.time))) {
+    const row = create('li', 'alarm-row');
+    const label = create('span', 'alarm-row-label');
+    label.append(create('strong', '', alarm.name), create('small', '', alarm.time));
+    const edit = control(alarm.name + ' 알람 수정', '수정', 'btn btn-small', () => {
+      fillAlarmForm(alarm);
+      alarmName.focus();
+    });
+    const remove = control(alarm.name + ' 알람 삭제', '삭제', 'btn btn-small', () => {
+      const updated = alarms.filter((item) => item.id !== alarm.id);
+      if (saveAlarms(updated)) {
+        if (editingAlarm === alarm.id) fillAlarmForm();
+        alarmName.focus();
+      }
+    });
+    row.append(label, edit, remove);
+    list.append(row);
+  }
+}
+
+function saveAlarms(updated) {
+  if (!writeList(storageKeys.alarms, updated)) {
+    byId('alarm-error').textContent = '이 브라우저에 알람을 저장할 수 없습니다.';
+    return false;
+  }
+  alarms = updated;
+  renderAlarmSettings();
+  renderUpcomingAlarms(clockFormat.format());
+  return true;
+}
+
+byId('alarm-settings').addEventListener('click', () => {
+  fillAlarmForm();
+  renderAlarmSettings();
+  alarmDialog.showModal();
+});
+byId('cancel-alarm-edit').addEventListener('click', () => fillAlarmForm());
+byId('dismiss-alarm').addEventListener('click', () => { byId('alarm-toast').hidden = true; });
+alarmForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const name = alarmName.value.trim();
+  const time = alarmTime.value;
+  if (!name || !isAlarmTime(time)) {
+    byId('alarm-error').textContent = '도매상 이름과 마감 시간을 입력하세요.';
+    return;
+  }
+  if (alarms.some((alarm) => alarm.id !== editingAlarm && alarm.name === name && alarm.time === time)) {
+    byId('alarm-error').textContent = '같은 이름과 시간의 알람이 이미 있습니다.';
+    return;
+  }
+  const updated = editingAlarm === null
+    ? [...alarms, {id: recordId(), name, time}]
+    : alarms.map((alarm) => alarm.id === editingAlarm ? {...alarm, name, time} : alarm);
+  if (saveAlarms(updated)) fillAlarmForm();
+});
+
 const medicineName = byId('medicine-name');
+let recentMedicines = readList(storageKeys.recentMedicines).filter((value) => typeof value === 'string').slice(0, 8);
+function renderRecentMedicines() {
+  byId('medicine-recent').replaceChildren(...recentMedicines.map((name) => {
+    const option = create('option');
+    option.value = name;
+    return option;
+  }));
+}
+renderRecentMedicines();
 medicineName.addEventListener('input', () => medicineName.setCustomValidity(''));
 medicineName.form.addEventListener('submit', (event) => {
   medicineName.value = medicineName.value.trim();
@@ -619,7 +855,11 @@ medicineName.form.addEventListener('submit', (event) => {
     event.preventDefault();
     medicineName.setCustomValidity('의약품 이름을 입력하세요.');
     medicineName.reportValidity();
+    return;
   }
+  recentMedicines = [medicineName.value, ...recentMedicines.filter((name) => name !== medicineName.value)].slice(0, 8);
+  savePreference(storageKeys.recentMedicines, recentMedicines);
+  renderRecentMedicines();
 });
 
 function highlightSection() {
@@ -639,4 +879,13 @@ renderCards();
 renderWidgets();
 renderCalendar();
 highlightSection();
+refreshClock();
+setInterval(refreshClock, 1000);
+document.addEventListener('visibilitychange', refreshClock);
+if (typeof ResizeObserver === 'function') {
+  const dock = byId('favorites');
+  new ResizeObserver(() => {
+    document.documentElement.style.setProperty('--dock-height', dock.offsetHeight + 'px');
+  }).observe(dock);
+}
 void loadSharedApps();

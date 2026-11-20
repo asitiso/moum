@@ -3,11 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f8f6f3">
+  <meta name="theme-color" content="#edf5f0">
   <meta name="description" content="센트럴온누리약국의 앱, 약국 업무 도구, 서식을 한곳에서 찾습니다.">
   <title>약국 업무 모음 · 센트럴온누리약국</title>
-  <link rel="stylesheet" href="style.css?v=2">
-  <script type="module" src="app.js?v=2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@300&amp;family=Noto+Sans+KR:wght@400..800&amp;display=swap">
+  <link rel="icon" type="image/webp" href="assets/icons/apps.webp">
+  <link rel="stylesheet" href="style.css?v=3">
+  <script type="module" src="app.js?v=3"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">본문으로 이동</a>
@@ -17,14 +21,25 @@
         <span class="brand-mark" aria-hidden="true">+</span>
         <span>센트럴온누리약국<small>업무 모음</small></span>
       </a>
-      <nav aria-label="업무 메뉴">
-        <a href="#favorites"><span aria-hidden="true">☆</span>즐겨찾기</a>
-        <a href="#my-apps"><span aria-hidden="true">▦</span>내 앱</a>
-        <a href="#ai"><span aria-hidden="true">✦</span>AI 도구</a>
-        <a href="#work"><span aria-hidden="true">⊞</span>약국 업무</a>
-        <a href="#forms"><span aria-hidden="true">▤</span>다빈도 서식</a>
+      <nav class="category-nav" aria-label="업무 메뉴">
+        <a href="#my-apps">내 앱</a>
+        <details class="category-menu"><summary>AI 서비스</summary><div class="menu-panel" id="menu-ai"><a href="#ai">AI 서비스 전체</a></div></details>
+        <details class="category-menu"><summary>약국 업무</summary><div class="menu-panel" id="menu-work"><a href="#work">약국 업무 전체</a></div></details>
+        <details class="category-menu"><summary>다빈도 서식</summary><div class="menu-panel" id="menu-forms"><a href="#forms">다빈도 서식 전체</a></div></details>
+        <a href="https://allaipharm.com/commu_intro.php" target="_blank" rel="noopener">커뮤팜 <span aria-hidden="true">↗</span></a>
       </nav>
-      <a class="provider side-provider" href="https://allaipharm.com/AI_PHARM/aipharm.php" target="_blank" rel="noopener">AI팜 열기 <span aria-hidden="true">↗</span></a>
+      <div class="header-tools">
+        <button class="btn btn-small" type="button" id="widget-settings">위젯 관리</button>
+        <details class="account-menu">
+          <summary class="btn btn-small">AI팜</summary>
+          <div class="menu-panel">
+            <a href="https://allaipharm.com/AI_PHARM/aipharm.php" target="_blank" rel="noopener">AI팜 홈 ↗</a>
+            <a href="https://allaipharm.com/AI_PHARM/aipharm_login.php" target="_blank" rel="noopener">로그인 ↗</a>
+            <a href="https://allaipharm.com/AI_PHARM/aipharm_join.php" target="_blank" rel="noopener">가입 ↗</a>
+            <a href="https://allaipharm.com/AI_PHARM/aipharm.php#aiphFbBtn" target="_blank" rel="noopener">AI팜 건의하기 ↗</a>
+          </div>
+        </details>
+      </div>
     </header>
 
     <main id="main" class="main">
@@ -32,26 +47,19 @@
       <header class="toolbar">
         <form class="medicine-search" action="https://nedrug.mfds.go.kr/searchDrug" method="get" target="_blank" rel="noopener" role="search" aria-label="의약품 검색">
           <label class="sr-only" for="medicine-name">의약품명</label>
-          <input type="search" id="medicine-name" name="itemName" placeholder="의약품 이름" maxlength="100" required>
+          <input type="search" id="medicine-name" name="itemName" placeholder="의약품 이름" maxlength="100" list="medicine-recent" required>
+          <datalist id="medicine-recent"></datalist>
           <input type="hidden" name="searchYn" value="true">
           <button type="submit" title="식약처 의약품안전나라에서 검색">의약품 검색 <span aria-hidden="true">↗</span></button>
         </form>
         <div class="toolbar-actions">
           <button type="button" class="btn" id="find-tools" aria-keyshortcuts="Control+k Meta+k">도구 찾기 <kbd>Ctrl K</kbd></button>
-          <button type="button" class="btn" id="widget-settings">위젯 설정</button>
+          <button type="button" class="btn" id="theme-settings" aria-label="배경 테마 설정">배경 테마</button>
         </div>
       </header>
 
       <div class="dashboard">
         <div class="tool-sections">
-          <section id="favorites" class="tool-section favorite-section" aria-labelledby="favorites-title">
-            <div class="section-heading">
-              <h2 id="favorites-title">즐겨찾기</h2>
-              <button class="btn btn-small" type="button" id="manage-favorites" aria-pressed="false">순서 편집</button>
-            </div>
-            <div id="favorites-list" class="tool-grid"></div>
-          </section>
-
           <section id="my-apps" class="tool-section" aria-labelledby="apps-title">
             <div class="section-heading">
               <div><h2 id="apps-title">내 앱 <span id="app-count" class="count"></span></h2><p id="sync-status" role="status"></p></div>
@@ -64,7 +72,7 @@
           </section>
 
           <section id="ai" class="tool-section" aria-labelledby="ai-title">
-            <div class="section-heading"><h2 id="ai-title">AI 도구</h2></div>
+            <div class="section-heading"><h2 id="ai-title">AI 서비스</h2></div>
             <div id="ai-list" class="tool-grid"></div>
           </section>
 
@@ -92,25 +100,75 @@
           </section>
           <section id="widget-deadline" class="widget" aria-labelledby="deadline-title">
             <h2 id="deadline-title">도매상 주문 마감</h2>
-            <p>등록한 마감 시간과 알림은 AI팜에서 확인하세요.</p>
-            <a class="widget-link" href="https://allaipharm.com/AI_PHARM/aipharm.php" target="_blank" rel="noopener">AI팜에서 알람 확인 <span aria-hidden="true">↗</span></a>
+            <div id="deadline-next"></div>
+            <button class="btn btn-small" id="alarm-settings" type="button">주문 알람 설정</button>
           </section>
           <section id="widget-supply" class="widget" aria-labelledby="supply-title">
-            <h2 id="supply-title">의약품 공급 소식</h2>
-            <a class="widget-link" href="https://allaipharm.com/AI_PHARM/aipharm_supply_suspend.php" target="_blank" rel="noopener">공급중단·부족 품목 조회 <span aria-hidden="true">↗</span></a>
-            <a class="widget-link" href="https://allaipharm.com/AI_PHARM/aipharm_identifier_change.php" target="_blank" rel="noopener">식별표시 변경 조회 <span aria-hidden="true">↗</span></a>
+            <h2 id="supply-title">의약품 공급중단·부족</h2>
+            <a class="widget-link" href="https://allaipharm.com/AI_PHARM/aipharm_supply_suspend.php" target="_blank" rel="noopener">최신 품목 조회 <span aria-hidden="true">↗</span></a>
+          </section>
+        </aside>
+        <aside class="news" aria-label="약국 업무 소식">
+          <section class="widget workspace-clock" aria-label="한국 시간"><time id="workspace-clock"></time><span id="clock-date"></span></section>
+          <section class="widget" aria-labelledby="updates-title">
+            <h2 id="updates-title">AI팜 업데이트 소식</h2>
+            <a class="news-link" href="https://allaipharm.com/ai_order.php" target="_blank" rel="noopener"><strong>AI 도매 주문 ↗</strong><span>바코드나 약품명으로 품목을 찾아 주문합니다.</span></a>
+            <a class="widget-link" href="https://allaipharm.com/AI_PHARM/aipharm.php#aiu" target="_blank" rel="noopener">AI팜 공지 열기 <span aria-hidden="true">↗</span></a>
+          </section>
+          <section class="widget" aria-labelledby="changes-title">
+            <h2 id="changes-title">식별표시 변경 소식</h2>
+            <a class="widget-link" href="https://allaipharm.com/AI_PHARM/aipharm_identifier_change.php" target="_blank" rel="noopener">최신 변경 내역 조회 <span aria-hidden="true">↗</span></a>
           </section>
         </aside>
       </div>
       <footer>
         <span>연결된 업무 도구와 서식은 AI팜에서 열립니다.</span>
         <div>
-          <a href="https://allaipharm.com/commu_intro.php" target="_blank" rel="noopener">커뮤팜 ↗</a>
-          <a href="https://allaipharm.com/AI_PHARM/aipharm_login.php" target="_blank" rel="noopener">AI팜 로그인 ↗</a>
+          <a href="https://allaipharm.com/AI_PHARM/aipharm_terms.php" target="_blank" rel="noopener">AI팜 이용약관 ↗</a>
+          <a href="https://allaipharm.com/AI_PHARM/aipharm_privacy.php" target="_blank" rel="noopener">AI팜 개인정보처리방침 ↗</a>
         </div>
       </footer>
     </main>
   </div>
+
+  <section id="favorites" class="favorites-dock" aria-label="즐겨찾기">
+    <div class="dock-heading">
+      <h2>즐겨찾기</h2>
+      <button type="button" class="btn btn-small" id="reset-favorites" hidden>기본값 복원</button>
+      <button type="button" class="btn btn-small" id="manage-favorites" aria-label="즐겨찾기 편집" aria-expanded="false" aria-controls="favorites-list">즐겨찾기 편집</button>
+    </div>
+    <div id="favorites-list" class="tool-grid"></div>
+    <p id="favorite-drop" hidden>여기로 끌어 놓아 즐겨찾기 해제</p>
+  </section>
+
+  <dialog id="theme-dialog" aria-labelledby="theme-title">
+    <div class="dialog-header"><h2 id="theme-title">배경 테마</h2><button type="button" class="icon-btn" data-close aria-label="닫기">×</button></div>
+    <div class="theme-options">
+      <button type="button" class="theme-choice" data-theme-choice="mint" aria-label="민트 테마"><span aria-hidden="true"></span>민트</button>
+      <button type="button" class="theme-choice" data-theme-choice="violet" aria-label="라벤더 테마"><span aria-hidden="true"></span>라벤더</button>
+      <button type="button" class="theme-choice" data-theme-choice="sand" aria-label="모래 테마"><span aria-hidden="true"></span>모래</button>
+      <button type="button" class="theme-choice" data-theme-choice="night" aria-label="밤 테마"><span aria-hidden="true"></span>밤</button>
+    </div>
+  </dialog>
+
+  <dialog id="alarm-dialog" aria-labelledby="alarm-title">
+    <div class="dialog-header"><h2 id="alarm-title">도매상 주문 알람</h2><button type="button" class="icon-btn" data-close aria-label="닫기">×</button></div>
+    <p class="dialog-help">매일 한국 시간 기준으로 알립니다. 이 브라우저에 저장되며 화면이 열려 있을 때 알려드립니다.</p>
+    <ul id="alarm-list" class="alarm-list"></ul>
+    <form class="alarm-form" id="alarm-form">
+      <label for="alarm-name">도매상 이름</label>
+      <input id="alarm-name" maxlength="40" required>
+      <label for="alarm-time">주문 마감 시간</label>
+      <input type="time" id="alarm-time" required>
+      <p id="alarm-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" id="cancel-alarm-edit" hidden>수정 취소</button>
+        <button type="submit" class="btn btn-primary" id="save-alarm">알람 추가</button>
+      </div>
+    </form>
+    <a class="widget-link" href="https://allaipharm.com/AI_PHARM/aipharm.php" target="_blank" rel="noopener">AI팜에 등록한 알람 확인 <span aria-hidden="true">↗</span></a>
+  </dialog>
+  <div class="alarm-toast" id="alarm-toast" hidden><p id="alarm-message" role="alert"></p><button type="button" class="btn btn-small" id="dismiss-alarm">확인</button></div>
 
   <dialog id="tool-dialog" aria-labelledby="lookup-title">
     <div class="dialog-header"><h2 id="lookup-title">도구 찾기</h2><button class="icon-btn" type="button" data-close aria-label="닫기">×</button></div>
@@ -135,7 +193,7 @@
   </dialog>
 
   <dialog id="widget-dialog" aria-labelledby="widget-title">
-    <div class="dialog-header"><h2 id="widget-title">위젯 설정</h2><button class="icon-btn" type="button" data-close aria-label="닫기">×</button></div>
+    <div class="dialog-header"><h2 id="widget-title">위젯 관리</h2><button class="icon-btn" type="button" data-close aria-label="닫기">×</button></div>
     <div id="widget-options"></div>
     <div class="dialog-actions"><button type="button" class="btn btn-primary" data-close>완료</button></div>
   </dialog>
